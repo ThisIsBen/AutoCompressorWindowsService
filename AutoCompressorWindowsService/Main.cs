@@ -1,0 +1,322 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.ServiceProcess;
+using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
+
+namespace AutoCompressorWindowsService
+{
+    public partial class Main : ServiceBase
+    {
+        //create timer 
+        private Timer timer;
+        //create AutoCompressor object
+        private AutoCompressor autoCompressorObj;
+        //create ReadInUserSettings object
+        private ReadInUserSettings readInUserSettings;
+
+
+
+        //Check when the compression time comes every 1 minute
+        private int timerInterval = DynamicConstants.checkCompressionTimeInterval;
+
+
+        //It is used to accumulate the status of all the folders that go through the compression process
+        //We will output it to the イベントビューアー.
+        //As a result the manager can check which folder has been compressed and 
+        //which folder has been deleted.
+        public static string folderStatusAfterCompressLog = "";
+
+
+
+        public Main()
+        {
+            InitializeComponent();
+
+            this.AutoLog = false;
+
+            if (!System.Diagnostics.EventLog.SourceExists("AutoCompressorWindowsServiceSource"))
+
+            {
+
+                System.Diagnostics.EventLog.CreateEventSource( "AutoCompressorWindowsServiceSource", "AutoCompressorWindowsServiceLog");
+
+            }
+
+            eventLog1.Source = "AutoCompressorWindowsServiceSource";
+
+        }
+        //Set up a timer that ticks every 1 minute.        
+        protected override void OnStart(string[] args)
+        {
+            //set up AutoCompressor object
+            autoCompressorObj =new AutoCompressor();
+
+            //set up ReadInUserSettings object and 
+            //read in the user's AutoCompressor settings from a txt file
+            readInUserSettings = new ReadInUserSettings();
+
+            //set up timer
+            timer = new Timer();
+
+            timer.Elapsed += new ElapsedEventHandler(AutoFolderCompressorTimer_Elapsed);
+
+            timer.Interval = timerInterval;
+
+            timer.Start();
+
+
+            //When the AutoCompressorWindowsService is activated,
+            //recover the content of the Dictionary that records 
+            //which folder has been compressed
+            
+            
+            recoverDictFromFile();
+        }
+
+        //When the AutoCompressorWindowsService is deactivated,
+        //Stop and reset the timer
+        protected override void OnStop()
+        {
+
+            timer.Stop();
+
+            timer = null;
+
+        }
+
+        //Every time the timer ticks, 
+        //Check whether the compression time set by the user comes
+        //If yes,
+        //Compress folders according to the user's settings
+        //Check the free disk space 
+        private void AutoFolderCompressorTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            //Step 2 Activate the compression automatically 
+            //according to the compression time set by the user
+
+            //Check whether the compression time set by the user comes
+            if (IsCompressionTime())
+            {
+                //stop the timer for compressing folders
+                //because when the user sets the 何日前のデータを圧縮して保存するか（単位：日）:
+                //in the 自動圧縮設定.txt　to be very big like 220 days,
+                //it will take more than 1 day to finish all the compression process.
+               
+                //If we do not stop the timer, the program will start again in the next day 
+                //before all the compression process ends. 
+                //Some task will be done again and maybe some error will occur.
+                timer.Stop();
+
+                //Compress folders according to the user's settings
+                compressFolderAccordingToSettings();
+                
+                if(whetherDeleteAfterCompress()== true)
+                {
+                    //Delete original folders after compression finishes
+                    deleteOriginalFolderAfterCompress();
+                }
+
+
+
+                //Check the free disk space 
+                checkFreeDiskSpace();
+
+
+                //Every time after AutoCompressorWindowsService finishes all its work,
+                //back up the content of the Dictionary that records 
+                //which folder has been compressed
+                
+                backupDictToFile();
+
+
+                //start the timer again after all the compression process finishes
+                timer.Start();
+            }
+
+            /*
+            else
+            {
+                eventLog1.WriteEntry("まだ圧縮時間ではない。");
+            }
+            */
+            
+        }
+
+        //Check whether the user wants to delete folders automatically after AutoCompressorWindowsService compresses the folders.
+        private bool whetherDeleteAfterCompress()
+        {
+           
+            if (readInUserSettings.getWhetherDeleteFolderAfterCompress == "Yes")
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        //Check whether the compression time set by the user comes
+        private bool IsCompressionTime()
+        {
+            
+            string[] userCompressionTime = readInUserSettings.getCompressionTime.Split(':');
+            int userCompressionTimeHour = int.Parse(userCompressionTime[0]);
+            int userCompressionTimeMinute = int.Parse(userCompressionTime[1]);
+
+            //compose the compression time set by the user as TimeSpan 
+            TimeSpan compressionTime = new TimeSpan(userCompressionTimeHour, userCompressionTimeMinute, 0); //10 o'clock
+            //get current time
+            TimeSpan now = DateTime.Now.TimeOfDay;
+           
+            //Check whether it is compression time (Hour,Second) now
+            //if yes, return true
+            if ((compressionTime.Hours == now.Hours) && (compressionTime.Minutes == now.Minutes))
+            {
+                return true;
+
+            }
+
+            return false;
+        }
+
+
+        //Compress folders according to the user's settings
+        private void compressFolderAccordingToSettings()
+        {
+            autoCompressorObj.compressFolder(readInUserSettings.getTargetFolder, readInUserSettings.getZIPStorageFolder,readInUserSettings.getFolderOverNDays);
+
+            //Output the log that records the status of all the folders that go through the compression process
+            //to the イベントビューアー
+            if(folderStatusAfterCompressLog!="")
+            {
+                eventLog1.WriteEntry(folderStatusAfterCompressLog);
+            }
+           
+
+            //Reset the content of folderStatusAfterCompressLog
+            resetFolderStatusAfterCompressLog();
+            
+            
+
+        }
+
+        //Check the free disk space 
+        private void checkFreeDiskSpace()
+        {
+            double remainingFreeDiskSpace = autoCompressorObj.getDiskFreeSpace(readInUserSettings.getNASDriveName);
+            //Output the log to record that the remaining free space of the disk has been checked
+            string checkedNASDriveName=readInUserSettings.getNASDriveName.Split(':')[0];
+            eventLog1.WriteEntry(checkedNASDriveName+"ドライブ空き容量を確認しました。");
+
+            if (remainingFreeDiskSpace < Convert.ToDouble(readInUserSettings.getFreeSpaceLimit))
+            {
+
+                showMsgBoxFromWS(checkedNASDriveName + "ドライブ空き容量不足。フォルダーを圧縮して保存後、残り" + remainingFreeDiskSpace.ToString() + "GB", "Message from AutoCompressorWindowsService");
+                //Output the log to record that the remaining free space of the disk is not enough
+                eventLog1.WriteEntry(checkedNASDriveName + "ドライブ空き容量不足。フォルダーを圧縮して保存後、残り" + remainingFreeDiskSpace.ToString() + "GB");
+
+            }
+
+        }
+
+
+
+        //Delete original folders after compression finishes
+        private void deleteOriginalFolderAfterCompress()
+        {
+            //Set up a DeleteOriginalFolder object
+            DeleteOriginalFolder originalFolderDeleter = new DeleteOriginalFolder();
+
+            string deleteLog = "";
+            //delete all the folders in the DeleteOriginalFolder.deletionList,
+            //The status of the folders in the DeleteOriginalFolder.deletionList are all "圧縮して保存しました。"
+            foreach (string delFolderName in DeleteOriginalFolder.deletionList) // Loop through List with foreach
+            {
+               
+            
+                    //Wait for the compression to finish and delete the original folder
+                    originalFolderDeleter.deleteAfterCompress(readInUserSettings.getTargetFolder +"\\"+ delFolderName);
+
+                    //Write the delete event to log
+                    deleteLog += delFolderName + ": "+ "削除しました。\n";
+                
+
+
+                
+            }
+
+            //Clear the content of the deletionList
+            DeleteOriginalFolder.resetDeletionList();
+
+            if(deleteLog!="")
+            {
+                eventLog1.WriteEntry(deleteLog);
+            }
+           
+
+
+        }
+        //output a log 
+        public  void outputLog(string logContent)
+        {
+            eventLog1.WriteEntry(logContent);
+
+        }
+
+        //recover the content of the Dictionary that records 
+        //which folder has been compressed
+        public void recoverDictFromFile()
+        {
+            /*
+            //recover 圧縮済みフォルダーの記録 to a dictionary from a xml file
+            Backup_RecoverDict.recoverDictFromXMLFile(DynamicConstants.backupDictXMLFile, autoCompressorObj.compressedFolderNameDict);
+            */
+            //recover 圧縮済みフォルダーの記録 to a dictionary from a json file
+            autoCompressorObj.compressedFolderNameDict=Backup_RecoverDict.recoverDictFromJSONFile(DynamicConstants.backupDictJSONFile);
+
+        }
+
+
+        //Back up the content of the Dictionary that records 
+        //which folder has been compressed
+        public void backupDictToFile()
+        {
+            /*
+            //Save the content of the 圧縮済みフォルダーの記録dictionary to a xml file
+            Backup_RecoverDict.backupDictToXMLFile(DynamicConstants.backupDictXMLFile, autoCompressorObj.compressedFolderNameDict);
+            */
+
+            //Save the content of the 圧縮済みフォルダーの記録dictionary to a json file
+            Backup_RecoverDict.backupDictToJSONFile(DynamicConstants.backupDictJSONFile, autoCompressorObj.compressedFolderNameDict);
+        }
+
+
+
+        //Clear the content of the folderStatusAfterCompressLog
+        private static void resetFolderStatusAfterCompressLog()
+        {
+            folderStatusAfterCompressLog = "";
+        }
+
+
+
+        
+
+        public static IntPtr WTS_CURRENT_SERVER_HANDLE = IntPtr.Zero;
+        
+        //Display GUI message from Windows Service
+        public static void showMsgBoxFromWS(string message, string title) { int resp = 0; WTSSendMessage(WTS_CURRENT_SERVER_HANDLE, WTSGetActiveConsoleSessionId(), title, title.Length, message, message.Length, 0, 0, out resp, false); }
+        [DllImport("kernel32.dll", SetLastError = true)] public static extern int WTSGetActiveConsoleSessionId();[DllImport("wtsapi32.dll", SetLastError = true)] public static extern bool WTSSendMessage(IntPtr hServer, int SessionId, String pTitle, int TitleLength, String pMessage, int MessageLength, int Style, int Timeout, out int pResponse, bool bWait);
+
+
+
+    }
+}
