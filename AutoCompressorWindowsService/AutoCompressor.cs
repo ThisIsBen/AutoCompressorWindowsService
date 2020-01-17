@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace AutoCompressorWindowsService
 {
@@ -105,60 +107,94 @@ namespace AutoCompressorWindowsService
 
         //Compress the folders created over XX days ago (何日前のデータを圧縮して保存するか)　
         //and have not been compressed in the target folder(圧縮する目標フォルダー)
-        public void compressFolder(string targetFolder,string ZIPStorageFolder,
-            string folderOverNDays)
+        public void compressFolder(string targetFolder, string ZIPStorageFolder,
+            string folderOverNDays, string deleteAfterCompressOption)
         {
-            //get the date from folderOverNDays
-            DateTime olderThanThisDate = DateTime.Now.AddDays(-1*Int32.Parse(folderOverNDays));
 
-
-
-
-            //Get creation time of each folder
-            foreach (string currentFolderFullPath in Directory.GetDirectories(targetFolder))
+            //Use the existing EventLog source to output the message of 
+            //finishing compressing a folder and finishing deleting a folder after its compression process.
+            using (EventLog AfterComparessEventLog = new EventLog("AutoCompressorWindowsServiceLog"))
             {
-                
+                ////Use the existing EventLog source to output the message
+                AfterComparessEventLog.Source = "AutoCompressorWindowsServiceSource";
+
+
+                //get the date from folderOverNDays
+                DateTime olderThanThisDate = DateTime.Now.AddDays(-1 * Int32.Parse(folderOverNDays));
+
+
+
 
                 //Get creation time of each folder
-                DateTime currentFolderCreationDate = Directory.GetLastWriteTime(currentFolderFullPath);
-
-
-                //get folder name
-                string currentFolderName = currentFolderFullPath.Remove(0, targetFolder.Length+1);
-
-                if (currentFolderCreationDate <= olderThanThisDate)
+                foreach (string currentFolderFullPath in Directory.GetDirectories(targetFolder))
                 {
-                    //if the folder name does not exist in the dictionary, 
-                    //add the folder name to a dictionary
-                    if (!compressedFolderNameDict.ContainsKey(currentFolderName))
+
+
+                    //Get creation time of each folder
+                    DateTime currentFolderCreationDate = Directory.GetLastWriteTime(currentFolderFullPath);
+
+
+                    //get folder name
+                    string currentFolderName = currentFolderFullPath.Remove(0, targetFolder.Length + 1);
+
+                    if (currentFolderCreationDate <= olderThanThisDate)
                     {
-                        compressedFolderNameDict.Add(currentFolderName, "");
+                        //if the folder name does not exist in the dictionary, 
+                        //add the folder name to a dictionary
+                        if (!compressedFolderNameDict.ContainsKey(currentFolderName))
+                        {
+                            compressedFolderNameDict.Add(currentFolderName, "");
 
-                        //compress the folder
-                        createZIPFile(currentFolderFullPath, ZIPStorageFolder + "\\" + currentFolderName + ".zip", currentFolderName);
+                            //compress the folder
+                            createZIPFile(currentFolderFullPath, ZIPStorageFolder + "\\" + currentFolderName + ".zip", currentFolderName);
+
+                            //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
+                            //to be "Yes" in the 自動圧縮設定.txt,
+                            //we delete the original folder after compression
+                            if (deleteAfterCompressOption == "DeleteAfterCompress")
+                            {
+                                // Delete A original folders after it finishes its compression process
+                                DeleteOriginalFolder.deleteAOriginalFolderAfterCompress(targetFolder);
+                            }
+                        }
+
+
+
+                        //if the folder name has existed in the dictionary,
+                        //do nothing to avoid overwriting old zip file, and
+                        //record the repeated folder in the "compressedFolderNameDict" dictionary
+                        else
+                        {
+
+                            compressedFolderNameDict[currentFolderName] = "既に圧縮したことがあります、圧縮しません。";
+
+                            //Add the status of the currently processed folder to the log message.
+                            Main.folderStatusAfterCompressLog += currentFolderName + ": " + "既に圧縮したことがあります、圧縮しません。\n";
+                        }
+
+
+
+                        //Output the log that records the status of all the folders that go through the compression process
+                        //to the イベントビューアー
+                        if (Main.folderStatusAfterCompressLog != "")
+                        {
+
+
+                            AfterComparessEventLog.WriteEntry(Main.folderStatusAfterCompressLog);
+
+                        }
+
+
+                        //Reset the content of folderStatusAfterCompressLog
+                        Main.resetFolderStatusAfterCompressLog();
+
                     }
-
-
-
-                    //if the folder name has existed in the dictionary,
-                    //do nothing to avoid overwriting old zip file, and
-                    //record the repeated folder in the "compressedFolderNameDict" dictionary
-                    else
-                    {
-
-                        compressedFolderNameDict[currentFolderName] = "既に圧縮したことがあります、圧縮しません。";
-
-                        //Add the status of the currently processed folder to the log message.
-                        Main.folderStatusAfterCompressLog += currentFolderName + ": " + "既に圧縮したことがあります、圧縮しません。\n";
-                    }
-
                 }
+
+
             }
 
-            
-        }
-    
-       
+        } 
 
     }
 }

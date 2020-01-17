@@ -18,7 +18,7 @@ namespace AutoCompressorWindowsService
 
         //Wait until the specified folder is not in use, and then
         //delete it.
-        public void deleteAfterCompress(string targetDirectory)
+        public static void deleteAfterCompress(string targetDirectory)
         {
             //Wait for all the files to be not in use
             waitForCompressFinish(targetDirectory);
@@ -69,7 +69,7 @@ namespace AutoCompressorWindowsService
         }
 
         //Delete a folder
-        private void deleteAFolder(string targetDirectory)
+        private static void deleteAFolder(string targetDirectory)
         {
             var dir = new DirectoryInfo(targetDirectory);
             dir.Attributes = dir.Attributes & ~FileAttributes.ReadOnly;
@@ -111,6 +111,76 @@ namespace AutoCompressorWindowsService
 
         }
 
+
+        //Delete A original folders after it finishes its compression process
+        public static void deleteAOriginalFolderAfterCompress(string targetFolder)
+        {
+            
+           
+            //delete all the folders in the DeleteOriginalFolder.deletionList,
+            //The status of the folders in the DeleteOriginalFolder.deletionList are all "圧縮して保存しました。"
+            foreach (string delFolderName in DeleteOriginalFolder.deletionList) // Loop through List with foreach
+            {
+
+
+                //Wait for the compression to finish and delete the original folder
+                deleteAfterCompress(targetFolder + "\\" + delFolderName);
+
+
+                //Write the delete event to log
+                //Add the status of the currently processed folder to the log message.
+                Main.folderStatusAfterCompressLog += delFolderName + ": " + "削除しました。\n";
+                
+
+
+
+
+            }
+
+            //Clear the content of the deletionList
+            DeleteOriginalFolder.resetDeletionList();
+
+            
+
+
+
+        }
+
+
+        //Delete ALL original folders after compression finishes
+        private void deleteWholeOriginalFolderAfterCompress(string targetFolder)
+        {
+
+          
+            //delete all the folders in the DeleteOriginalFolder.deletionList,
+            //The status of the folders in the DeleteOriginalFolder.deletionList are all "圧縮して保存しました。"
+            foreach (string delFolderName in DeleteOriginalFolder.deletionList) // Loop through List with foreach
+            {
+
+
+                //Wait for the compression to finish and delete the original folder
+                deleteAfterCompress(targetFolder + "\\" + delFolderName);
+
+
+                //Write the delete event to log
+                //Add the status of the currently processed folder to the log message.
+                Main.folderStatusAfterCompressLog += delFolderName + ": " + "削除しました。\n";
+
+
+
+
+
+
+            }
+
+            //Clear the content of the deletionList
+            DeleteOriginalFolder.resetDeletionList();
+
+            
+
+
+
+        }
         /*
         //Get folder size
         private static double GetFolderSizeInKB(string folderPath)

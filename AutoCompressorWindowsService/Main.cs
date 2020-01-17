@@ -54,6 +54,9 @@ namespace AutoCompressorWindowsService
             eventLog1.Source = "AutoCompressorWindowsServiceSource";
 
         }
+
+
+
         //Set up a timer that ticks every 1 minute.        
         protected override void OnStart(string[] args)
         {
@@ -108,7 +111,8 @@ namespace AutoCompressorWindowsService
             {
                 //stop the timer for compressing folders
                 //because when the user sets the 何日前のデータを圧縮して保存するか（単位：日）:
-                //in the 自動圧縮設定.txt　to be very big like 220 days,
+                //in the 自動圧縮設定.txt　to be very big like compressing all the 
+                //folders created 1 day ago,
                 //it will take more than 1 day to finish all the compression process.
                
                 //If we do not stop the timer, the program will start again in the next day 
@@ -116,14 +120,29 @@ namespace AutoCompressorWindowsService
                 //Some task will be done again and maybe some error will occur.
                 timer.Stop();
 
-                //Compress folders according to the user's settings
-                compressFolderAccordingToSettings();
-                
-                if(whetherDeleteAfterCompress()== true)
+               
+
+
+                //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
+                //to be "Yes" in the 自動圧縮設定.txt,
+                //we delete the original folder after compression
+                if (whetherDeleteAfterCompress()== true)
                 {
-                    //Delete original folders after compression finishes
-                    deleteOriginalFolderAfterCompress();
+                    //Compress folders according to the user's settings
+                    compressFolderAccordingToSettings("DeleteAfterCompress");
+                    
                 }
+
+                //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
+                //to be "No" in the 自動圧縮設定.txt,
+                //we do not do anything after compression
+                else
+                {
+                    //Compress folders according to the user's settings
+                    compressFolderAccordingToSettings();
+
+                }
+                
 
 
 
@@ -133,8 +152,7 @@ namespace AutoCompressorWindowsService
 
                 //Every time after AutoCompressorWindowsService finishes all its work,
                 //back up the content of the Dictionary that records 
-                //which folder has been compressed
-                
+                //which folder has been compressed                
                 backupDictToFile();
 
 
@@ -189,20 +207,11 @@ namespace AutoCompressorWindowsService
 
 
         //Compress folders according to the user's settings
-        private void compressFolderAccordingToSettings()
+        private void compressFolderAccordingToSettings(string deleteAfterCompressOption="")
         {
-            autoCompressorObj.compressFolder(readInUserSettings.getTargetFolder, readInUserSettings.getZIPStorageFolder,readInUserSettings.getFolderOverNDays);
+            autoCompressorObj.compressFolder(readInUserSettings.getTargetFolder, readInUserSettings.getZIPStorageFolder,readInUserSettings.getFolderOverNDays, deleteAfterCompressOption);
 
-            //Output the log that records the status of all the folders that go through the compression process
-            //to the イベントビューアー
-            if(folderStatusAfterCompressLog!="")
-            {
-                eventLog1.WriteEntry(folderStatusAfterCompressLog);
-            }
-           
-
-            //Reset the content of folderStatusAfterCompressLog
-            resetFolderStatusAfterCompressLog();
+            
             
             
 
@@ -227,49 +236,11 @@ namespace AutoCompressorWindowsService
 
         }
 
+       
+        
 
 
-        //Delete original folders after compression finishes
-        private void deleteOriginalFolderAfterCompress()
-        {
-            //Set up a DeleteOriginalFolder object
-            DeleteOriginalFolder originalFolderDeleter = new DeleteOriginalFolder();
-
-            string deleteLog = "";
-            //delete all the folders in the DeleteOriginalFolder.deletionList,
-            //The status of the folders in the DeleteOriginalFolder.deletionList are all "圧縮して保存しました。"
-            foreach (string delFolderName in DeleteOriginalFolder.deletionList) // Loop through List with foreach
-            {
-               
-            
-                    //Wait for the compression to finish and delete the original folder
-                    originalFolderDeleter.deleteAfterCompress(readInUserSettings.getTargetFolder +"\\"+ delFolderName);
-
-                    //Write the delete event to log
-                    deleteLog += delFolderName + ": "+ "削除しました。\n";
-                
-
-
-                
-            }
-
-            //Clear the content of the deletionList
-            DeleteOriginalFolder.resetDeletionList();
-
-            if(deleteLog!="")
-            {
-                eventLog1.WriteEntry(deleteLog);
-            }
-           
-
-
-        }
-        //output a log 
-        public  void outputLog(string logContent)
-        {
-            eventLog1.WriteEntry(logContent);
-
-        }
+       
 
         //recover the content of the Dictionary that records 
         //which folder has been compressed
@@ -301,7 +272,7 @@ namespace AutoCompressorWindowsService
 
 
         //Clear the content of the folderStatusAfterCompressLog
-        private static void resetFolderStatusAfterCompressLog()
+        public static void resetFolderStatusAfterCompressLog()
         {
             folderStatusAfterCompressLog = "";
         }

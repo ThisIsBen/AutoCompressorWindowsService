@@ -543,3 +543,27 @@ EventLog ソース AutoCompressorWindowsService をログ Application に作成�
    logfile = C:\Users\KNK09087\Desktop\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.InstallLog
    assemblypath = C:\Users\KNK09087\Desktop\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.exe
    logtoconsole = 
+アセンブリ 'C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.exe' をアンインストールしています。
+該当するパラメーター:
+   logtoconsole = 
+   logfile = C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.InstallLog
+   assemblypath = C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.exe
+EventLog ソース AutoCompressorWindowsService を削除しています。
+サービス AutoCompressorWindowsService をシステムから削除しています...
+サービス 'AutoCompressorWindowsService' は正常にシステムから削除されました。
+サービス 'AutoCompressorWindowsService' を停止しようとしました。
+アセンブリ 'C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.exe' をインストールしています。
+該当するパラメーター:
+   i = 
+   logfile = C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.InstallLog
+   assemblypath = C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.exe
+   logtoconsole = 
+サービス 'AutoCompressorWindowsService' をインストールしています...
+サービス 'AutoCompressorWindowsService' は正常にインストールされました。
+EventLog ソース AutoCompressorWindowsService をログ Application に作成しています...
+アセンブリ 'C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.exe' をコミットしています。
+該当するパラメーター:
+   i = 
+   logfile = C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.InstallLog
+   assemblypath = C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.exe
+   logtoconsole = 
