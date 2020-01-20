@@ -52,10 +52,13 @@ namespace AutoCompressorWindowsService
                 DeleteOriginalFolder.deletionList.Add(currentFolderName);
             }
 
-            
+
             //If there is a zip file with the same name exists,
-            //do nothing to avoid overwrite old zip file
+            //1. Do nothing to avoid overwrite old zip file
             //record the repeated folder in the "compressedFolderNameDict" dictionary
+
+            //2. The original file will not be deleted, even though the user set the 
+            //圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください): to "Yes"
             else
             {
 
@@ -128,11 +131,8 @@ namespace AutoCompressorWindowsService
                 //Get creation time of each folder
                 foreach (string currentFolderFullPath in Directory.GetDirectories(targetFolder))
                 {
-
-
                     //Get creation time of each folder
                     DateTime currentFolderCreationDate = Directory.GetLastWriteTime(currentFolderFullPath);
-
 
                     //get folder name
                     string currentFolderName = currentFolderFullPath.Remove(0, targetFolder.Length + 1);
@@ -145,8 +145,19 @@ namespace AutoCompressorWindowsService
                         {
                             compressedFolderNameDict.Add(currentFolderName, "");
 
+                            /*
+                             //check compress order 
+                            AfterComparessEventLog.WriteEntry("Start to compress "+currentFolderName );
+                            */
+
                             //compress the folder
                             createZIPFile(currentFolderFullPath, ZIPStorageFolder + "\\" + currentFolderName + ".zip", currentFolderName);
+
+                            /*
+                            //check compress order 
+                            AfterComparessEventLog.WriteEntry("Finish compressing " + currentFolderName);
+                            */
+
 
                             //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
                             //to be "Yes" in the 自動圧縮設定.txt,

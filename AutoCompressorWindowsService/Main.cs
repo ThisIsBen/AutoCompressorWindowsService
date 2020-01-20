@@ -173,7 +173,7 @@ namespace AutoCompressorWindowsService
         private bool whetherDeleteAfterCompress()
         {
            
-            if (readInUserSettings.getWhetherDeleteFolderAfterCompress == "Yes")
+            if (readInUserSettings.getWhetherDeleteFolderAfterCompress.ToUpper() == "YES")
             {
                 return true;
             }
