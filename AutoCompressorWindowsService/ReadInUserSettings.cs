@@ -57,24 +57,25 @@ namespace AutoCompressorWindowsService
             {
                 line = input.ReadLine();
 
-
+                //when the reader reaches the end of the file
                 if (line == null)
                 {
                     break;
                 }
 
+                //ignore white space
                 if (line == String.Empty || Regex.Replace(line, @"\s", "") == "")
                 {
                     continue;
                 }
 
-                //handle non-empty line
+                //trim the white space in the front and in the back of a non-empty line
                 txtFileContentList.Add(line.Trim());
 
 
             } while (true);
 
-
+            //store the content read from the file to a list
             for (int i = 1; i < txtFileContentList.Count; i = i + 2)
             {
 
