@@ -19,7 +19,7 @@ namespace AutoCompressorWindowsService
 
 
         //Compress a folder to create a ZIP file
-        public void createZIPFile(string targetFolderPath,string storagePathWithZIPFilename,string currentFolderName)
+        public void createZIPFile(string targetFolderPath,string storagePathWithZIPFilename,string currentFolderName,EventLog AfterComparessEventLog)
         {
 
 
@@ -28,18 +28,14 @@ namespace AutoCompressorWindowsService
             //else, compress and create zip file as usual
             if (File.Exists(storagePathWithZIPFilename) == false)
             {
+                //indicate that which folder is being compressed currently.
+                AfterComparessEventLog.WriteEntry(currentFolderName + ": " + "圧縮途中です。\n");
 
-                //debug
-                //Main mainObj = new Main();
-                //mainObj.outputLog(currentFolderName + "圧縮し始める");
-                //debug
-
+                
+                //compress the folder to a ZIP file
                 ZipFile.CreateFromDirectory(targetFolderPath, storagePathWithZIPFilename);
 
-                //debug              
-                //mainObj.outputLog(currentFolderName + "圧縮しました");
-                //debug
-
+                
 
                 //record that the folder is compressed successfully in the "compressedFolderNameDict" dictionary
                 compressedFolderNameDict[currentFolderName] = "圧縮して保存しました。";
@@ -113,11 +109,11 @@ namespace AutoCompressorWindowsService
         public void compressFolder(string targetFolder, string ZIPStorageFolder,
             string folderOverNDays, string deleteAfterCompressOption)
         {
-
             //Use the existing EventLog source to output the message of 
             //finishing compressing a folder and finishing deleting a folder after its compression process.
             using (EventLog AfterComparessEventLog = new EventLog("AutoCompressorWindowsServiceLog"))
             {
+
                 ////Use the existing EventLog source to output the message
                 AfterComparessEventLog.Source = "AutoCompressorWindowsServiceSource";
 
@@ -151,7 +147,7 @@ namespace AutoCompressorWindowsService
                             */
 
                             //compress the folder
-                            createZIPFile(currentFolderFullPath, ZIPStorageFolder + "\\" + currentFolderName + ".zip", currentFolderName);
+                            createZIPFile(currentFolderFullPath, ZIPStorageFolder + "\\" + currentFolderName + ".zip", currentFolderName, AfterComparessEventLog);
 
                             /*
                             //check compress order 
