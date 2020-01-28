@@ -31,11 +31,20 @@ namespace AutoCompressorWindowsService
                 //indicate that which folder is being compressed currently.
                 AfterComparessEventLog.WriteEntry(currentFolderName + ": " + "圧縮途中です。\n");
 
-                
-                //compress the folder to a ZIP file
-                ZipFile.CreateFromDirectory(targetFolderPath, storagePathWithZIPFilename);
+                try
+                {
+                    //compress the folder to a ZIP file
+                    ZipFile.CreateFromDirectory(targetFolderPath, storagePathWithZIPFilename);
+                }
+                catch (System.UnauthorizedAccessException e)
+                {
+                    //output an error message to event log to indicate that which folder
+                    //can not be accessed.
+                    AfterComparessEventLog.WriteEntry(currentFolderName + ": " + e.Message);
+                }
 
-                
+
+
 
                 //record that the folder is compressed successfully in the "compressedFolderNameDict" dictionary
                 compressedFolderNameDict[currentFolderName] = "圧縮して保存しました。";
