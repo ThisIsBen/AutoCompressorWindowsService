@@ -19,7 +19,7 @@ namespace AutoCompressorWindowsService
 
 
         //Compress a folder to create a ZIP file
-        public void createZIPFile(string targetFolderPath,string storagePathWithZIPFilename,string currentFolderName,EventLog AfterComparessEventLog)
+        public void createZIPFile(string targetFolderPath,string storagePathWithZIPFilename,string currentFolderName)
         {
 
 
@@ -29,19 +29,51 @@ namespace AutoCompressorWindowsService
             if (File.Exists(storagePathWithZIPFilename) == false)
             {
                 //indicate that which folder is being compressed currently.
-                AfterComparessEventLog.WriteEntry(currentFolderName + ": " + "圧縮途中です。\n");
+                 EventLogHandler.outputLog(currentFolderName + ": " + "圧縮途中です。\n");
 
                 try
                 {
                     //compress the folder to a ZIP file
-                    ZipFile.CreateFromDirectory(targetFolderPath, storagePathWithZIPFilename);
+                    ZipFile.CreateFromDirectory(targetFolderPath, storagePathWithZIPFilename, CompressionLevel.Optimal, false);
                 }
-                catch (System.UnauthorizedAccessException e)
+                catch (UnauthorizedAccessException UAEx)
                 {
                     //output an error message to event log to indicate that which folder
                     //can not be accessed.
-                    AfterComparessEventLog.WriteEntry(currentFolderName + ": " + e.Message);
+                     EventLogHandler.outputLog(currentFolderName + ": " + "sourceDirectoryName で指定されたディレクトリまたは destinationArchiveFileName で指定されたファイルにアクセスするために必要なアクセス許可がありません。\n" + UAEx.Message);
                 }
+                catch (DirectoryNotFoundException dirEx)
+                {
+                    // Let the user know that the directory did not exist.
+                     EventLogHandler.outputLog(currentFolderName + ": " + "Directory not found: " + dirEx.Message);
+                }
+                catch (ArgumentNullException aNEx)
+                {
+                    // Let the user know that sourceDirectoryName または destinationArchiveFileName が null です.
+                    EventLogHandler.outputLog(currentFolderName + ": " + "sourceDirectoryName または destinationArchiveFileName が null です。\n " + aNEx.Message);
+                }
+                catch (ArgumentException aEx)
+                {
+                    // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
+                    EventLogHandler.outputLog(currentFolderName + ": " + "sourceDirectoryName または destinationArchiveFileName が Empty であるか、空白文字のみが含まれているか、無効な文字が少なくとも 1 つ含まれています。\n" + aEx.Message);
+                }
+                catch (PathTooLongException PTLEx)
+                {
+                    // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
+                    EventLogHandler.outputLog(currentFolderName + ": " + "指定したパス、ファイル名、またはその両方がシステム定義の最大長を超えています。\n" + PTLEx.Message);
+                }
+                catch (IOException IOEx)
+                {
+                    // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
+                    EventLogHandler.outputLog(currentFolderName + ": " + "destinationArchiveFileName が既に存在します。\n" + IOEx.Message);
+                }
+                catch (NotSupportedException NSEx)
+                {
+                    // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
+                    EventLogHandler.outputLog(currentFolderName + ": " + "sourceDirectoryName または destinationArchiveFileName に無効な書式が含まれています。\n または zip アーカイブは書き込みをサポートしません。\n" + NSEx.Message);
+                }
+                
+
 
 
 
@@ -88,7 +120,7 @@ namespace AutoCompressorWindowsService
                 {
                     //display drive name
                     //AutoFolderCompressorMessageBox("ディスク名前：" + drive.Name.ToString() , "Message from AutoCompressorWS");
-                    //eventLog1.WriteEntry("ディスク名前：" + drive.Name.ToString());
+                    // EventLogHandler.outputLog("ディスク名前：" + drive.Name.ToString());
 
 
                     //return the free space of a local drive in GB
@@ -118,14 +150,7 @@ namespace AutoCompressorWindowsService
         public void compressFolder(string targetFolder, string ZIPStorageFolder,
             string folderOverNDays, string deleteAfterCompressOption)
         {
-            //Use the existing EventLog source to output the message of 
-            //finishing compressing a folder and finishing deleting a folder after its compression process.
-            using (EventLog AfterComparessEventLog = new EventLog("AutoCompressorWindowsServiceLog"))
-            {
-
-                ////Use the existing EventLog source to output the message
-                AfterComparessEventLog.Source = "AutoCompressorWindowsServiceSource";
-
+            
 
                 //get the date from folderOverNDays
                 DateTime olderThanThisDate = DateTime.Now.AddDays(-1 * Int32.Parse(folderOverNDays));
@@ -152,15 +177,15 @@ namespace AutoCompressorWindowsService
 
                             /*
                              //check compress order 
-                            AfterComparessEventLog.WriteEntry("Start to compress "+currentFolderName );
+                             EventLogHandler.outputLog("Start to compress "+currentFolderName );
                             */
 
                             //compress the folder
-                            createZIPFile(currentFolderFullPath, ZIPStorageFolder + "\\" + currentFolderName + ".zip", currentFolderName, AfterComparessEventLog);
+                            createZIPFile(currentFolderFullPath, ZIPStorageFolder + "\\" + currentFolderName + ".zip", currentFolderName);
 
                             /*
                             //check compress order 
-                            AfterComparessEventLog.WriteEntry("Finish compressing " + currentFolderName);
+                             EventLogHandler.outputLog("Finish compressing " + currentFolderName);
                             */
 
 
@@ -196,7 +221,7 @@ namespace AutoCompressorWindowsService
                         {
 
 
-                            AfterComparessEventLog.WriteEntry(Main.folderStatusAfterCompressLog);
+                             EventLogHandler.outputLog(Main.folderStatusAfterCompressLog);
 
                         }
 
@@ -208,7 +233,7 @@ namespace AutoCompressorWindowsService
                 }
 
 
-            }
+            
 
         } 
 

@@ -56,6 +56,7 @@
     <Compile Include="CheckRemoteDriveFreeSpace.cs" />
     <Compile Include="DeleteOriginalFolder.cs" />
     <Compile Include="DynamicConstants.cs" />
+    <Compile Include="EventLogHandler.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>

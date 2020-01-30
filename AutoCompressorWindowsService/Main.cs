@@ -43,15 +43,9 @@ namespace AutoCompressorWindowsService
 
             this.AutoLog = false;
 
-            if (!System.Diagnostics.EventLog.SourceExists("AutoCompressorWindowsServiceSource"))
-
-            {
-
-                System.Diagnostics.EventLog.CreateEventSource( "AutoCompressorWindowsServiceSource", "AutoCompressorWindowsServiceLog");
-
-            }
-
-            eventLog1.Source = "AutoCompressorWindowsServiceSource";
+           
+            // Create an EventLog for monitoring this app
+            EventLogHandler.createEventlog("AutoCompressorWindowsServiceSource", "AutoCompressorWindowsServiceLog");
 
         }
 
@@ -163,7 +157,7 @@ namespace AutoCompressorWindowsService
             /*
             else
             {
-                eventLog1.WriteEntry("まだ圧縮時間ではない。");
+                 EventLogHandler.outputLog("まだ圧縮時間ではない。");
             }
             */
             
@@ -223,14 +217,14 @@ namespace AutoCompressorWindowsService
             double remainingFreeDiskSpace = autoCompressorObj.getDiskFreeSpace(readInUserSettings.getNASDriveName);
             //Output the log to record that the remaining free space of the disk has been checked
             string checkedNASDriveName=readInUserSettings.getNASDriveName.Split(':')[0];
-            eventLog1.WriteEntry(checkedNASDriveName+"ドライブ空き容量を確認しました。");
+             EventLogHandler.outputLog(checkedNASDriveName+"ドライブ空き容量を確認しました。");
 
             if (remainingFreeDiskSpace < Convert.ToDouble(readInUserSettings.getFreeSpaceLimit))
             {
 
                 showMsgBoxFromWS(checkedNASDriveName + "ドライブ空き容量不足。フォルダーを圧縮して保存後、残り" + remainingFreeDiskSpace.ToString() + "GB", "Message from AutoCompressorWindowsService");
                 //Output the log to record that the remaining free space of the disk is not enough
-                eventLog1.WriteEntry(checkedNASDriveName + "ドライブ空き容量不足。フォルダーを圧縮して保存後、残り" + remainingFreeDiskSpace.ToString() + "GB");
+                 EventLogHandler.outputLog(checkedNASDriveName + "ドライブ空き容量不足。フォルダーを圧縮して保存後、残り" + remainingFreeDiskSpace.ToString() + "GB");
 
             }
 
