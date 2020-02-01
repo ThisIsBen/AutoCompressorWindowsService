@@ -9,7 +9,7 @@ namespace AutoCompressorWindowsService
     class DynamicConstants
     {
         //to record the time interval for checking whether compression time comes
-        public static int checkCompressionTimeInterval = 60 * 1000;
+        public static int checkCompressionTimeInterval = 1 * 1000; //interval = 1 second
 
         //to record the txt file that contains the user's settings of the AutoCompressorWindowsService
         //public static string userAutoCompressorSettingsTxtFile = @"C:\Users\KNK07529\Desktop\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";

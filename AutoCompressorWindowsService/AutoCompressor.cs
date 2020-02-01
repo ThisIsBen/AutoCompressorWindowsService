@@ -21,8 +21,7 @@ namespace AutoCompressorWindowsService
         //Compress a folder to create a ZIP file
         public void createZIPFile(string targetFolderPath,string storagePathWithZIPFilename,string currentFolderName)
         {
-
-
+           
             //if there is a zip file with the same name exists,
             //do nothing to avoid overwrite old zip file
             //else, compress and create zip file as usual
@@ -36,43 +35,73 @@ namespace AutoCompressorWindowsService
                     //compress the folder to a ZIP file
                     ZipFile.CreateFromDirectory(targetFolderPath, storagePathWithZIPFilename, CompressionLevel.Optimal, false);
                 }
-                catch (UnauthorizedAccessException UAEx)
+                catch (UnauthorizedAccessException e)
                 {
                     //output an error message to event log to indicate that which folder
                     //can not be accessed.
-                     EventLogHandler.outputLog(currentFolderName + ": " + "sourceDirectoryName で指定されたディレクトリまたは destinationArchiveFileName で指定されたファイルにアクセスするために必要なアクセス許可がありません。\n" + UAEx.Message);
+                     EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
+
+                    //display this error message on the GUI window to inform the user
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 AutoCompressorWindowsServiceを停止して,エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+
+                   
                 }
-                catch (DirectoryNotFoundException dirEx)
+                catch (DirectoryNotFoundException e)
                 {
                     // Let the user know that the directory did not exist.
-                     EventLogHandler.outputLog(currentFolderName + ": " + "Directory not found: " + dirEx.Message);
+                     EventLogHandler.outputLog(currentFolderName + ": " +  e.Message);
+
+                    //display this error message on the GUI window to inform the user
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 AutoCompressorWindowsServiceを停止して,エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+
                 }
-                catch (ArgumentNullException aNEx)
+                catch (ArgumentNullException e)
                 {
                     // Let the user know that sourceDirectoryName または destinationArchiveFileName が null です.
-                    EventLogHandler.outputLog(currentFolderName + ": " + "sourceDirectoryName または destinationArchiveFileName が null です。\n " + aNEx.Message);
+                    EventLogHandler.outputLog(currentFolderName + ": " +  e.Message);
+
+                    //display this error message on the GUI window to inform the user
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 AutoCompressorWindowsServiceを停止して,エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+
                 }
-                catch (ArgumentException aEx)
+                catch (ArgumentException e)
                 {
                     // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
-                    EventLogHandler.outputLog(currentFolderName + ": " + "sourceDirectoryName または destinationArchiveFileName が Empty であるか、空白文字のみが含まれているか、無効な文字が少なくとも 1 つ含まれています。\n" + aEx.Message);
+                    EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
+
+                    //display this error message on the GUI window to inform the user
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 AutoCompressorWindowsServiceを停止して,エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+
                 }
-                catch (PathTooLongException PTLEx)
+                catch (PathTooLongException e)
                 {
                     // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
-                    EventLogHandler.outputLog(currentFolderName + ": " + "指定したパス、ファイル名、またはその両方がシステム定義の最大長を超えています。\n" + PTLEx.Message);
+                    EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
+
+                    //display this error message on the GUI window to inform the user
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 AutoCompressorWindowsServiceを停止して,エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+
                 }
-                catch (IOException IOEx)
+                catch (IOException e)
                 {
                     // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
-                    EventLogHandler.outputLog(currentFolderName + ": " + "destinationArchiveFileName が既に存在します。\n" + IOEx.Message);
+                    EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
+
+                    //display this error message on the GUI window to inform the user
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 AutoCompressorWindowsServiceを停止して,エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+
                 }
-                catch (NotSupportedException NSEx)
+                catch (NotSupportedException e)
                 {
                     // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
-                    EventLogHandler.outputLog(currentFolderName + ": " + "sourceDirectoryName または destinationArchiveFileName に無効な書式が含まれています。\n または zip アーカイブは書き込みをサポートしません。\n" + NSEx.Message);
+                    EventLogHandler.outputLog(currentFolderName + ": " +  e.Message);
+
+
+                    //display this error message on the GUI window to inform the user
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 AutoCompressorWindowsServiceを停止して,エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+
                 }
-                
+
 
 
 
