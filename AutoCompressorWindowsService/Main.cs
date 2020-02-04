@@ -271,9 +271,26 @@ namespace AutoCompressorWindowsService
             folderStatusAfterCompressLog = "";
         }
 
+        //stop the specified service and it waits until the service is stopped or a timeout(60sec) occurs.
+        public static void stopWindowsService(string serviceName)
+        {
+            int timeoutMilliseconds = 60 *1000;
+
+            ServiceController service = new ServiceController(serviceName);
+           
+            TimeSpan timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds);
+
+            service.Stop();
+            service.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
+
+            EventLogHandler.outputLog("エラーが発生しましたので、AutoCompressorWindowsServiceは停止されました。");
 
 
-        
+        }
+
+
+
+
 
         public static IntPtr WTS_CURRENT_SERVER_HANDLE = IntPtr.Zero;
         
