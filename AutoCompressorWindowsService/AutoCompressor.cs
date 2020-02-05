@@ -42,7 +42,7 @@ namespace AutoCompressorWindowsService
                      EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsServiceが停止されました。)\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
 
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
@@ -53,7 +53,7 @@ namespace AutoCompressorWindowsService
                      EventLogHandler.outputLog(currentFolderName + ": " +  e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsServiceが停止されました。)\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
@@ -63,7 +63,7 @@ namespace AutoCompressorWindowsService
                     EventLogHandler.outputLog(currentFolderName + ": " +  e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsServiceが停止されました。)\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
@@ -73,7 +73,7 @@ namespace AutoCompressorWindowsService
                     EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsServiceが停止されました。)\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
@@ -83,7 +83,7 @@ namespace AutoCompressorWindowsService
                     EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsServiceが停止されました。)\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
@@ -93,7 +93,7 @@ namespace AutoCompressorWindowsService
                     EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsServiceが停止されました。)\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
@@ -104,7 +104,7 @@ namespace AutoCompressorWindowsService
 
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsServiceが停止されました。)\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
