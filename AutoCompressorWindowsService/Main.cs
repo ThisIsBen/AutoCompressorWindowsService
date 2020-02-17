@@ -271,9 +271,22 @@ namespace AutoCompressorWindowsService
             folderStatusAfterCompressLog = "";
         }
 
+
+        //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+        public static void outputErrorMessageTxt(string errorMessage,string outputErrMsgTxtFolderPath)
+        {
+            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+            File.WriteAllText(outputErrMsgTxtFolderPath + "\\" + DateTime.Now.ToString("yyyy_M_dd--HH_mm_ss") + "エラー発生.txt", errorMessage);
+
+        }
+
+
         //stop the specified service and it waits until the service is stopped or a timeout(60sec) occurs.
         public static void stopWindowsService(string serviceName)
         {
+            EventLogHandler.outputLog("エラーが発生しましたので、AutoCompressorWindowsServiceは停止されました。");
+
+
             int timeoutMilliseconds = 60 *1000;
 
             ServiceController service = new ServiceController(serviceName);
@@ -283,8 +296,7 @@ namespace AutoCompressorWindowsService
             service.Stop();
             service.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
 
-            EventLogHandler.outputLog("エラーが発生しましたので、AutoCompressorWindowsServiceは停止されました。");
-
+           
 
         }
 

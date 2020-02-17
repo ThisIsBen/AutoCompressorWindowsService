@@ -39,72 +39,104 @@ namespace AutoCompressorWindowsService
                 {
                     //output an error message to event log to indicate that which folder
                     //can not be accessed.
-                     EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
+                    EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    string errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n";
+                    Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
 
+                    //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                    Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
                 catch (DirectoryNotFoundException e)
                 {
-                    // Let the user know that the directory did not exist.
-                     EventLogHandler.outputLog(currentFolderName + ": " +  e.Message);
+                    //output an error message to event log to indicate that which folder
+                    //can not be accessed.
+                    EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    string errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n";
+                    Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+                    //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                    Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
                 catch (ArgumentNullException e)
                 {
-                    // Let the user know that sourceDirectoryName または destinationArchiveFileName が null です.
-                    EventLogHandler.outputLog(currentFolderName + ": " +  e.Message);
+                    //output an error message to event log to indicate that which folder
+                    //can not be accessed.
+                    EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    string errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n";
+                    Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+                    //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                    Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
                 catch (ArgumentException e)
                 {
-                    // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
+                    ///output an error message to event log to indicate that which folder
+                    //can not be accessed.
                     EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    string errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n";
+                    Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+                    //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                    Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
                 catch (PathTooLongException e)
                 {
-                    // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
+                    //output an error message to event log to indicate that which folder
+                    //can not be accessed.
                     EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    string errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n";
+                    Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+                    //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                    Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
                 catch (IOException e)
                 {
-                    // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
+                    //output an error message to event log to indicate that which folder
+                    //can not be accessed.
                     EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    string errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n";
+                    Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+                    //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                    Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
                 catch (NotSupportedException e)
                 {
-                    // Let the user know that sourceDirectoryName または destinationArchiveFileName が 無効 です.
-                    EventLogHandler.outputLog(currentFolderName + ": " +  e.Message);
-
+                    //output an error message to event log to indicate that which folder
+                    //can not be accessed.
+                    EventLogHandler.outputLog(currentFolderName + ": " + e.Message);
 
                     //display this error message on the GUI window to inform the user
-                    Main.showMsgBoxFromWS(currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n", "Message from AutoCompressorWindowsService");
+                    string errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 自動圧縮設定.txtに指定された圧縮されたZIPフォルダーの保存先から " + currentFolderName + ".zip" + " を手動で削除する\n\nStep3 AutoCompressorWindowsServiceを再起動してください。\n";
+                    Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+                    //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                    Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
                     //Stop the AutoCompressorWindowsService
                     Main.stopWindowsService("AutoCompressorWindowsService");
                 }
