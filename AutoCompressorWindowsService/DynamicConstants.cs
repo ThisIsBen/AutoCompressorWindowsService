@@ -9,7 +9,11 @@ namespace AutoCompressorWindowsService
     class DynamicConstants
     {
         //to record the time interval for checking whether compression time comes
-        public static int checkCompressionTimeInterval = 1 * 1000; //interval = 1 second
+        //!!!!!!Don't set checkCompressionTimeInterval less than 60 seconds!!!!!!
+        //Because it will start the compression process more than once and cause some 
+        //unexpected problems.
+        //For example, the 容量messageBox will keep showing up.
+        public static int checkCompressionTimeInterval = 60 * 1000; //interval = 1 minute
 
         //to record the txt file that contains the user's settings of the AutoCompressorWindowsService
         //public static string userAutoCompressorSettingsTxtFile = @"C:\Users\KNK07529\Desktop\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
@@ -32,6 +36,15 @@ namespace AutoCompressorWindowsService
         public static string backupDictJSONFile = @"C:\Users\M171183.M17-1183\Desktop\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
 
 
+
+        //wait for files to be ready to be deleted
+        //when deleting the files if the files are still in use,
+        //wait for this time interval and try to delete it again.
+        public static int waitReadyToBeDeleteTimeInterval = 20 * 1000;//20 second
+
+
+        //毎日圧縮するフォルダ数の最大限
+        public static int oneDayMaxCompressFolderNum = 12;
 
         //output error message to a txt file and save it to NAS
         public static string errorMessageTxtFolderPath = @"\\10.30.50.15\share\圧縮ソフト_エラーメッセージ記録";

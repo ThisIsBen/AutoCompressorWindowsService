@@ -25,9 +25,7 @@ namespace AutoCompressorWindowsService
 
 
 
-        //Check when the compression time comes every 1 minute
-        private int timerInterval = DynamicConstants.checkCompressionTimeInterval;
-
+       
 
         //It is used to accumulate the status of all the folders that go through the compression process
         //We will output it to the イベントビューアー.
@@ -66,17 +64,19 @@ namespace AutoCompressorWindowsService
 
             timer.Elapsed += new ElapsedEventHandler(AutoFolderCompressorTimer_Elapsed);
 
-            timer.Interval = timerInterval;
+            timer.Interval = DynamicConstants.checkCompressionTimeInterval;
 
             timer.Start();
 
 
             //When the AutoCompressorWindowsService is activated,
             //recover the content of the Dictionary that records 
-            //which folder has been compressed
-            
-            
+            //which folder has been compressed 
             recoverDictFromFile();
+
+
+            //Activate the compressor without waiting for the first checkCompressionTimeInterval
+            AutoFolderCompressorTimer_Elapsed(null,null);
         }
 
         //When the AutoCompressorWindowsService is deactivated,
@@ -103,12 +103,15 @@ namespace AutoCompressorWindowsService
             //Check whether the compression time set by the user comes
             if (IsCompressionTime())
             {
+
+               
+
                 //stop the timer for compressing folders
                 //because when the user sets the 何日前のデータを圧縮して保存するか（単位：日）:
                 //in the 自動圧縮設定.txt　to be very big like compressing all the 
                 //folders created 1 day ago,
                 //it will take more than 1 day to finish all the compression process.
-               
+
                 //If we do not stop the timer, the program will start again in the next day 
                 //before all the compression process ends. 
                 //Some task will be done again and maybe some error will occur.
@@ -240,6 +243,9 @@ namespace AutoCompressorWindowsService
         //which folder has been compressed
         public void recoverDictFromFile()
         {
+
+            
+           
             /*
             //recover 圧縮済みフォルダーの記録 to a dictionary from a xml file
             Backup_RecoverDict.recoverDictFromXMLFile(DynamicConstants.backupDictXMLFile, autoCompressorObj.compressedFolderNameDict);

@@ -222,15 +222,20 @@ namespace AutoCompressorWindowsService
 
                 //get the date from folderOverNDays
                 DateTime olderThanThisDate = DateTime.Now.AddDays(-1 * Int32.Parse(folderOverNDays));
+                
+                //count the number of folder to be compressed in today's compression 
+                int countTodayCompressFolderNum = 1;
 
 
 
-
-                //Get creation time of each folder
-                foreach (string currentFolderFullPath in Directory.GetDirectories(targetFolder))
+            //Get creation time of each folder
+            foreach (string currentFolderFullPath in Directory.GetDirectories(targetFolder))
                 {
                     //Get creation time of each folder
                     DateTime currentFolderCreationDate = Directory.GetLastWriteTime(currentFolderFullPath);
+
+                   
+
 
                     //get folder name
                     string currentFolderName = currentFolderFullPath.Remove(0, targetFolder.Length + 1);
@@ -241,31 +246,42 @@ namespace AutoCompressorWindowsService
                         //add the folder name to a dictionary
                         if (!compressedFolderNameDict.ContainsKey(currentFolderName))
                         {
-                            compressedFolderNameDict.Add(currentFolderName, "");
-
-                            /*
-                             //check compress order 
-                             EventLogHandler.outputLog("Start to compress "+currentFolderName );
-                            */
-
-                            //compress the folder
-                            createZIPFile(currentFolderFullPath, ZIPStorageFolder + "\\" + currentFolderName + ".zip", currentFolderName);
-
-                            /*
-                            //check compress order 
-                             EventLogHandler.outputLog("Finish compressing " + currentFolderName);
-                            */
-
-
-                            //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
-                            //to be "Yes" in the 自動圧縮設定.txt,
-                            //we delete the original folder after compression
-                            if (deleteAfterCompressOption == "DeleteAfterCompress")
+                            //keep the number of folder to be compressed in today's compression 
+                            //below the maximum setting
+                            if (countTodayCompressFolderNum <= DynamicConstants.oneDayMaxCompressFolderNum)
                             {
-                                // Delete A original folders after it finishes its compression process
-                                DeleteOriginalFolder.deleteAOriginalFolderAfterCompress(targetFolder);
+
+
+                                    //accumulate the number of folder to be compressed in today's compression
+                                    countTodayCompressFolderNum = countTodayCompressFolderNum + 1;
+
+                                    //compressedFolderNameDict.Add(currentFolderName, "");
+
+                                    /*
+                                     //check compress order 
+                                     EventLogHandler.outputLog("Start to compress "+currentFolderName );
+                                    */
+
+                                    //compress the folder
+                                    createZIPFile(currentFolderFullPath, ZIPStorageFolder + "\\" + currentFolderName + ".zip", currentFolderName);
+
+                                    /*
+                                    //check compress order 
+                                     EventLogHandler.outputLog("Finish compressing " + currentFolderName);
+                                    */
+
+
+                                    //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
+                                    //to be "Yes" in the 自動圧縮設定.txt,
+                                    //we delete the original folder after compression
+                                    if (deleteAfterCompressOption == "DeleteAfterCompress")
+                                    {
+                                        // Delete A original folders after it finishes its compression process
+                                        DeleteOriginalFolder.deleteAOriginalFolderAfterCompress(targetFolder);
+                                    }
+
+                                }
                             }
-                        }
 
 
 

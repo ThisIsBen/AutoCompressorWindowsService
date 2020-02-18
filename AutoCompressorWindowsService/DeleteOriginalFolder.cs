@@ -7,6 +7,7 @@ using System.IO;
 using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Security;
 
 namespace AutoCompressorWindowsService
 {
@@ -49,8 +50,8 @@ namespace AutoCompressorWindowsService
                         while (IsFileInUse(currentFileInfo) == true)
                         {
 
-                            // wait for 1 second
-                            await Task.Delay(1000);
+                            // wait for 20 second
+                            await Task.Delay(DynamicConstants.waitReadyToBeDeleteTimeInterval);
                         }
                         //*/
 
@@ -71,12 +72,76 @@ namespace AutoCompressorWindowsService
         //Delete a folder
         private static void deleteAFolder(string targetDirectory)
         {
-            var dir = new DirectoryInfo(targetDirectory);
-            dir.Attributes = dir.Attributes & ~FileAttributes.ReadOnly;
-            dir.Delete(true);
+            try
+            {
+                var dir = new DirectoryInfo(targetDirectory);
+                dir.Attributes = dir.Attributes & ~FileAttributes.ReadOnly;
+                dir.Delete(true);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                //output an error message to event log to indicate that which folder
+                //can not be accessed.
+                EventLogHandler.outputLog(targetDirectory + ": " + e.Message);
+
+                //display this error message on the GUI window to inform the user
+                string errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 自動圧縮設定.txtに指定された圧縮する目標フォルダーから " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+                Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+                //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
+                //Stop the AutoCompressorWindowsService
+                Main.stopWindowsService("AutoCompressorWindowsService");
 
 
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                //output an error message to event log to indicate that which folder
+                //can not be accessed.
+                EventLogHandler.outputLog(targetDirectory + ": " + e.Message);
 
+                //display this error message on the GUI window to inform the user
+                string errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 自動圧縮設定.txtに指定された圧縮する目標フォルダーから " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+                Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+                //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
+                //Stop the AutoCompressorWindowsService
+                Main.stopWindowsService("AutoCompressorWindowsService");
+            }
+
+            catch (IOException e)
+            {
+                //output an error message to event log to indicate that which folder
+                //can not be accessed.
+                EventLogHandler.outputLog(targetDirectory + ": " + e.Message);
+
+                //display this error message on the GUI window to inform the user
+                string errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 自動圧縮設定.txtに指定された圧縮する目標フォルダーから " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+                Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+                //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
+                //Stop the AutoCompressorWindowsService
+                Main.stopWindowsService("AutoCompressorWindowsService");
+            }
+
+            catch (SecurityException e)
+            {
+                //output an error message to event log to indicate that which folder
+                //can not be accessed.
+                EventLogHandler.outputLog(targetDirectory + ": " + e.Message);
+
+                //display this error message on the GUI window to inform the user
+                string errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 自動圧縮設定.txtに指定された圧縮する目標フォルダーから " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+                Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+                //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
+                //Stop the AutoCompressorWindowsService
+                Main.stopWindowsService("AutoCompressorWindowsService");
+            }
         }
 
         //Check if the file is in use
