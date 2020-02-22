@@ -306,7 +306,19 @@ namespace AutoCompressorWindowsService
 
         }
 
+        //To display error message to the user
+        public static void displayErrMsg(string errorMessage)
+        {
+            //output an error message to event log to indicate that which folder
+            //can not be accessed.
+            EventLogHandler.outputLog(errorMessage);
 
+            Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+
+            //output error message to a txt file in 圧縮ソフト_エラーメッセージ folder in NAS
+            Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
+
+        }
 
 
 
