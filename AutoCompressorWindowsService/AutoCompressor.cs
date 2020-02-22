@@ -32,7 +32,7 @@ namespace AutoCompressorWindowsService
                  EventLogHandler.outputLog(currentFolderName + ": " + "圧縮途中です。\n");
 
                 //Retry  when error occurs during compression.
-                for (int retryTimes=1; retryTimes <= DynamicConstants.retryTimesWhenErrOccurs; retryTimes++)
+                for (int retryTimes=1; retryTimes <= DynamicConstants.retryTimesLimit; retryTimes++)
                 {
 
                
@@ -52,7 +52,7 @@ namespace AutoCompressorWindowsService
 
 
                         //If it's still within retry times limit
-                        if (retryTimes< DynamicConstants.retryTimesWhenErrOccurs)
+                        if (retryTimes< DynamicConstants.retryTimesLimit)
                         {
                             ////Ben Not sure if auto deleting the not compress-complete ZIP file  works
 
@@ -102,7 +102,7 @@ namespace AutoCompressorWindowsService
 
 
                         //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesWhenErrOccurs)
+                        if (retryTimes < DynamicConstants.retryTimesLimit)
                         {
 
 
@@ -149,7 +149,7 @@ namespace AutoCompressorWindowsService
 
 
                         //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesWhenErrOccurs)
+                        if (retryTimes < DynamicConstants.retryTimesLimit)
                         {
 
 
@@ -196,7 +196,7 @@ namespace AutoCompressorWindowsService
 
 
                         //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesWhenErrOccurs)
+                        if (retryTimes < DynamicConstants.retryTimesLimit)
                         {
 
 
@@ -243,7 +243,7 @@ namespace AutoCompressorWindowsService
 
 
                         //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesWhenErrOccurs)
+                        if (retryTimes < DynamicConstants.retryTimesLimit)
                         {
 
 
@@ -290,7 +290,7 @@ namespace AutoCompressorWindowsService
 
 
                         //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesWhenErrOccurs)
+                        if (retryTimes < DynamicConstants.retryTimesLimit)
                         {
 
 
@@ -337,7 +337,7 @@ namespace AutoCompressorWindowsService
 
 
                         //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesWhenErrOccurs)
+                        if (retryTimes < DynamicConstants.retryTimesLimit)
                         {
 
 

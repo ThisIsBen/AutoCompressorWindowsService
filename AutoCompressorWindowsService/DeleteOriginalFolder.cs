@@ -73,7 +73,7 @@ namespace AutoCompressorWindowsService
         private static void deleteAFolder(string targetDirectory)
         {
             //Retry  when error occurs during compression.
-            for (int retryTimes = 1; retryTimes <= DynamicConstants.retryTimesWhenErrOccurs; retryTimes++)
+            for (int retryTimes = 1; retryTimes <= DynamicConstants.retryTimesLimit; retryTimes++)
             {
 
                 try
@@ -90,7 +90,7 @@ namespace AutoCompressorWindowsService
                     string errorMessage = "";
 
                     // If it's still within retry times limit
-                    if (retryTimes < DynamicConstants.retryTimesWhenErrOccurs)
+                    if (retryTimes < DynamicConstants.retryTimesLimit)
                     {
 
                         //display this error message on the GUI window to inform the user
@@ -132,7 +132,7 @@ namespace AutoCompressorWindowsService
                     string errorMessage = "";
 
                     // If it's still within retry times limit
-                    if (retryTimes < DynamicConstants.retryTimesWhenErrOccurs)
+                    if (retryTimes < DynamicConstants.retryTimesLimit)
                     {
 
                         //display this error message on the GUI window to inform the user
@@ -174,7 +174,7 @@ namespace AutoCompressorWindowsService
                     string errorMessage = "";
 
                     // If it's still within retry times limit
-                    if (retryTimes < DynamicConstants.retryTimesWhenErrOccurs)
+                    if (retryTimes < DynamicConstants.retryTimesLimit)
                     {
 
                         //display this error message on the GUI window to inform the user
@@ -216,7 +216,7 @@ namespace AutoCompressorWindowsService
                     string errorMessage = "";
 
                     // If it's still within retry times limit
-                    if (retryTimes < DynamicConstants.retryTimesWhenErrOccurs)
+                    if (retryTimes < DynamicConstants.retryTimesLimit)
                     {
 
                         //display this error message on the GUI window to inform the user

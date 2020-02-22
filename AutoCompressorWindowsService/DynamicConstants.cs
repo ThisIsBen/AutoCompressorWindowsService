@@ -54,7 +54,7 @@ namespace AutoCompressorWindowsService
         public static string errorMessageTxtFolderPath = @"\\10.30.50.15\share\圧縮ソフト_エラーメッセージ記録";
 
         //Retry times when error occurs during compression.
-        public static int retryTimesWhenErrOccurs = 3;
+        public static int retryTimesLimit = 3;
 
         //The time interval between 2 retries when error occurs during compression
         public static int retryTimeInterval = 15 * 1000;
