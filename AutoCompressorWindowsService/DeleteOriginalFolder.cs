@@ -19,7 +19,7 @@ namespace AutoCompressorWindowsService
 
         //Wait until the specified folder is not in use, and then
         //delete it.
-        public static void deleteAfterCompress(string targetDirectory)
+        public static void deleteAFolderIfNotInUse(string targetDirectory)
         {
             //Wait for all the files to be not in use
             waitUntilFolderNotInUse(targetDirectory);
@@ -301,7 +301,7 @@ namespace AutoCompressorWindowsService
 
 
                 //Wait for the compression to finish and delete the original folder
-                deleteAfterCompress(targetFolder + "\\" + delFolderName);
+                deleteAFolderIfNotInUse(targetFolder + "\\" + delFolderName);
 
 
                 //Write the delete event to log
@@ -393,7 +393,7 @@ namespace AutoCompressorWindowsService
 
 
                 //Wait for the compression to finish and delete the original folder
-                deleteAfterCompress(targetFolder + "\\" + delFolderName);
+                deleteAFolderIfNotInUse(targetFolder + "\\" + delFolderName);
 
 
                 //Write the delete event to log
