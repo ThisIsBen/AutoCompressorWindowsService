@@ -82,7 +82,7 @@ namespace AutoCompressorWindowsService
                             DeleteOriginalFolder.deleteAFileIfNotInUse(storagePathWithZIPFilename);
 
                             //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の"+ currentFolderName + ".zipが自動的に削除され,圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
+                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の"+ currentFolderName + ".zipが自動的に削除され,\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
 
                             //output the error message to event log, 
                             //pop -up window,
@@ -132,7 +132,7 @@ namespace AutoCompressorWindowsService
                             DeleteOriginalFolder.deleteAFileIfNotInUse(storagePathWithZIPFilename);
 
                             //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
+                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
 
                             //output the error message to event log, 
                             //pop -up window,
@@ -179,7 +179,7 @@ namespace AutoCompressorWindowsService
                             DeleteOriginalFolder.deleteAFileIfNotInUse(storagePathWithZIPFilename);
 
                             //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
+                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
 
                             //output the error message to event log, 
                             //pop -up window,
@@ -226,7 +226,7 @@ namespace AutoCompressorWindowsService
                             DeleteOriginalFolder.deleteAFileIfNotInUse(storagePathWithZIPFilename);
 
                             //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
+                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
 
                             //output the error message to event log, 
                             //pop -up window,
@@ -273,7 +273,7 @@ namespace AutoCompressorWindowsService
                             DeleteOriginalFolder.deleteAFileIfNotInUse(storagePathWithZIPFilename);
 
                             //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
+                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
 
                             //output the error message to event log, 
                             //pop -up window,
@@ -320,7 +320,7 @@ namespace AutoCompressorWindowsService
                             DeleteOriginalFolder.deleteAFileIfNotInUse(storagePathWithZIPFilename);
 
                             //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
+                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
 
                             //output the error message to event log, 
                             //pop -up window,
@@ -367,7 +367,7 @@ namespace AutoCompressorWindowsService
                             DeleteOriginalFolder.deleteAFileIfNotInUse(storagePathWithZIPFilename);
 
                             //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
+                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮途中の" + currentFolderName + ".zipが自動的に削除され,\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 エラーを解決する\n\nStep2 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
 
                             //output the error message to event log, 
                             //pop -up window,

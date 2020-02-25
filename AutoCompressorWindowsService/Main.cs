@@ -90,7 +90,7 @@ namespace AutoCompressorWindowsService
 
         }
 
-        //to protect currentKeepList,currentSaveList
+        //Avoid overlapping timer calls when timer interval is set to less than 1 minute 
         private static readonly object _lockObject = new object();
 
         //Every time the timer ticks, 
@@ -104,7 +104,8 @@ namespace AutoCompressorWindowsService
             //according to the compression time set by the user
 
             //Lock the timer tick callback function to 
-            //avoid overlapping timer calls
+            //avoid overlapping timer calls 
+            //when timer interval is set to less than 1 minute 
             lock (_lockObject)
             {
 
@@ -320,9 +321,15 @@ namespace AutoCompressorWindowsService
 
             Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
 
-            //output error message to a txt file in 圧縮ソフト_エラーメッセージ folder in NAS
-            Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
 
+            //Output error message to a txt file in 圧縮ソフト_エラーメッセージ folder in NAS
+
+            //Notice!!!!!!!! 
+            //The error message will not be output if the AutoCompressorWindowsService
+            //is not run by the account that has the authority to access
+            //the NAS that stores error messages.
+            Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
+            //Notice!!!!!!!! 
         }
 
 
