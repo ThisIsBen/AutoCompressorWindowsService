@@ -28,9 +28,7 @@ namespace AutoCompressorWindowsService
             //else, compress and create zip file as usual
             if (File.Exists(storagePathWithZIPFilename) == false)
             {
-                //indicate that which folder is being compressed currently.
-                 EventLogHandler.outputLog(currentFolderName + ": " + "圧縮途中です。\n");
-
+               
                 //Retry  when error occurs during compression.
                 for (int retryTimes=1; retryTimes <= DynamicConstants.retryTimesLimit; retryTimes++)
                 {
@@ -39,6 +37,10 @@ namespace AutoCompressorWindowsService
 
                     try
                     {
+                        //indicate that which folder is being compressed currently.
+                        EventLogHandler.outputLog(currentFolderName + ": " + "圧縮途中です。\n");
+
+
                         //compress the folder to a ZIP file
                         ZipFile.CreateFromDirectory(targetFolderPath, storagePathWithZIPFilename, CompressionLevel.Optimal, false);
 

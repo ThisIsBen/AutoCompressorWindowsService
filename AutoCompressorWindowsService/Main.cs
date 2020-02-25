@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text;
+
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -75,8 +76,7 @@ namespace AutoCompressorWindowsService
             recoverDictFromFile();
 
 
-            //Activate the compressor without waiting for the first checkCompressionTimeInterval
-            AutoFolderCompressorTimer_Elapsed(null,null);
+           
         }
 
         //When the AutoCompressorWindowsService is deactivated,
@@ -90,6 +90,9 @@ namespace AutoCompressorWindowsService
 
         }
 
+        //to protect currentKeepList,currentSaveList
+        private static readonly object _lockObject = new object();
+
         //Every time the timer ticks, 
         //Check whether the compression time set by the user comes
         //If yes,
@@ -100,11 +103,16 @@ namespace AutoCompressorWindowsService
             //Step 2 Activate the compression automatically 
             //according to the compression time set by the user
 
-            //Check whether the compression time set by the user comes
-            if (IsCompressionTime())
+            //Lock the timer tick callback function to 
+            //avoid overlapping timer calls
+            lock (_lockObject)
             {
 
-               
+                //Check whether the compression time set by the user comes
+                if (IsCompressionTime())
+            {
+
+
 
                 //stop the timer for compressing folders
                 //because when the user sets the 何日前のデータを圧縮して保存するか（単位：日）:
@@ -117,17 +125,19 @@ namespace AutoCompressorWindowsService
                 //Some task will be done again and maybe some error will occur.
                 timer.Stop();
 
-               
+
+
+
 
 
                 //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
                 //to be "Yes" in the 自動圧縮設定.txt,
                 //we delete the original folder after compression
-                if (whetherDeleteAfterCompress()== true)
+                if (whetherDeleteAfterCompress() == true)
                 {
                     //Compress folders according to the user's settings
                     compressFolderAccordingToSettings("DeleteAfterCompress");
-                    
+
                 }
 
                 //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
@@ -139,7 +149,7 @@ namespace AutoCompressorWindowsService
                     compressFolderAccordingToSettings();
 
                 }
-                
+
 
 
 
@@ -157,12 +167,7 @@ namespace AutoCompressorWindowsService
                 timer.Start();
             }
 
-            /*
-            else
-            {
-                 EventLogHandler.outputLog("まだ圧縮時間ではない。");
             }
-            */
             
         }
 
