@@ -21,21 +21,23 @@ namespace AutoCompressorWindowsService
         //delete it.
         public static void deleteAFolderIfNotInUse(string targetDirectory)
         {
-            //Wait for all the files to be not in use
-            waitUntilFolderNotInUse(targetDirectory);
+            //Check whether the folder exists, if no, don't do anything
+            if (Directory.Exists(targetDirectory))
+            {
 
-            //Delete the folder 
-            deleteAFolder( targetDirectory);
+                //Wait for all the files to be not in use
+                waitUntilFolderNotInUse(targetDirectory);
+
+                //Delete the folder 
+                deleteAFolder(targetDirectory);
+            }
 
         }
 
         //Wait for all the files to be not in use
         public static async void waitUntilFolderNotInUse(string targetDirectory)
         {
-            //Check whether the folder exists, if no, don't do anything
-            if (Directory.Exists(targetDirectory))
-            {
-                // Recurse into subdirectories of this directory.
+                //Recurse into subdirectories of this directory.
                 string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
                 foreach (string currentSubdirectory in subdirectoryEntries)
                 {
@@ -61,7 +63,7 @@ namespace AutoCompressorWindowsService
 
 
 
-            }
+            
 
 
            
@@ -83,7 +85,7 @@ namespace AutoCompressorWindowsService
                     dir.Delete(true);
 
                     //end this function if no error occurs
-                    break;
+                    return;
                 }
                 catch (UnauthorizedAccessException e)
                 {
