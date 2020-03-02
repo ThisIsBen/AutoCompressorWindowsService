@@ -67,7 +67,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
                            
 
 
@@ -87,7 +87,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -117,7 +117,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -137,7 +137,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -164,8 +164,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
-
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
                             //wait a while before starting next retry
@@ -184,7 +183,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -211,7 +210,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -231,7 +230,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -258,7 +257,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -278,7 +277,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -305,7 +304,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -325,7 +324,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -352,7 +351,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
 
@@ -372,8 +371,7 @@ namespace AutoCompressorWindowsService
                             //output the error message to event log, 
                             //pop -up window,
                             //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            Main.displayErrMsg(errorMessage);
-
+                            ReportErrorMsg.displayErrMsg("フォルダー圧縮", errorMessage);
 
 
                             //Stop the AutoCompressorWindowsService

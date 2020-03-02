@@ -284,13 +284,7 @@ namespace AutoCompressorWindowsService
         }
 
 
-        //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-        public static void outputErrorMessageTxt(string errorMessage,string outputErrMsgTxtFolderPath)
-        {
-            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-            File.WriteAllText(outputErrMsgTxtFolderPath + "\\" + DateTime.Now.ToString("yyyy_M_dd--HH_mm_ss") + "エラー発生.txt", errorMessage);
-
-        }
+       
 
 
         //stop the specified service and it waits until the service is stopped or a timeout(60sec) occurs.
@@ -312,27 +306,7 @@ namespace AutoCompressorWindowsService
 
         }
 
-        //To display error message to the user
-        public static void displayErrMsg(string errorMessage)
-        {
-            //output an error message to event log to indicate that which folder
-            //can not be accessed.
-            EventLogHandler.outputLog(errorMessage);
-
-            Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
-
-
-            //Output error message to a txt file in 圧縮ソフト_エラーメッセージ folder in NAS
-
-            //Notice!!!!!!!! 
-            //The error message will not be output if the AutoCompressorWindowsService
-            //is not run by the account that has the authority to access
-            //the NAS that stores error messages.
-            Main.outputErrorMessageTxt(errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-            //Notice!!!!!!!! 
-        }
-
-
+      
 
         public static IntPtr WTS_CURRENT_SERVER_HANDLE = IntPtr.Zero;
         

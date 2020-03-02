@@ -101,7 +101,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        Main.displayErrMsg(errorMessage);
+                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
 
                         //wait a while before starting next retry
                         Thread.Sleep(DynamicConstants.retryTimeInterval);
@@ -120,7 +120,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        Main.displayErrMsg(errorMessage);
+                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
 
 
 
@@ -143,7 +143,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        Main.displayErrMsg(errorMessage);
+                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
 
                         //wait a while before starting next retry
                         Thread.Sleep(DynamicConstants.retryTimeInterval);
@@ -162,7 +162,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        Main.displayErrMsg(errorMessage);
+                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
 
 
 
@@ -185,7 +185,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        Main.displayErrMsg(errorMessage);
+                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
 
                         //wait a while before starting next retry
                         Thread.Sleep(DynamicConstants.retryTimeInterval);
@@ -204,7 +204,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        Main.displayErrMsg(errorMessage);
+                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
 
 
 
@@ -227,7 +227,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        Main.displayErrMsg(errorMessage);
+                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
 
                         //wait a while before starting next retry
                         Thread.Sleep(DynamicConstants.retryTimeInterval);
@@ -246,7 +246,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        Main.displayErrMsg(errorMessage);
+                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
 
 
 
