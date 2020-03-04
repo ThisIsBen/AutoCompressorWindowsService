@@ -9,29 +9,62 @@ namespace AutoCompressorWindowsService
 {
     class ReportErrorMsg
     {
-         //To display error message to the user
+
+        //文字コード(ここでは、Shift JIS)
+        private static Encoding fileEncoding = Encoding.GetEncoding("shift_jis");
+
+
+        //To display error message to the user
         public static void displayErrMsg(string errorSource,string errorMessage)
         {
             //output an error message to event log to indicate that which folder
             //can not be accessed.
             EventLogHandler.outputLog(errorMessage);
 
-            Console.WriteLine(errorMessage);
-            //Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
+           
+            Main.showMsgBoxFromWS(errorMessage, "Message from AutoCompressorWindowsService");
 
-            //output error message to a txt file in 圧縮ソフト_エラーメッセージ folder in NAS
-            outputErrorMessageTxt(errorSource,errorMessage, DynamicConstants.errorMessageTxtFolderPath);
+           
 
         }
 
         //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-        public static void outputErrorMessageTxt(string errorSource, string errorMessage, string outputErrMsgTxtFolderPath)
+        public static  void outputErrorMessageTxt(string errorSource, string errorMessage, string outputErrMsgTxtFolderPath)
         {
-            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-            File.WriteAllText(outputErrMsgTxtFolderPath + "\\" + DateTime.Now.ToString("yyyy_M_dd--HH_mm_ss") + errorSource+"エラー.txt", errorMessage);
+            //check if the outputErrMsgTxtFolderPath is set to be a network drive
+            if (IsANetworkDrive(outputErrMsgTxtFolderPath))
+            {
+                // The 圧縮ソフトエラーメッセージ folder is set to be at the network drive
 
+                //only output the error message when there is network connection
+                //when the 圧縮ソフトエラーメッセージ folder is set to be at the network drive
+                if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+                {
+                    //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                    File.WriteAllText(outputErrMsgTxtFolderPath + "\\" + DateTime.Now.ToString("yyyy_MM_dd--HH_mm_ss") + errorSource + "エラー.txt", errorMessage, fileEncoding);
+                }
+            }
+            // The 圧縮ソフトエラーメッセージ folder is set to be at the local drive
+            else
+            {
+                //output error message to a txt file in 圧縮ソフトエラーメッセージ folder located in local drive
+                File.WriteAllText(outputErrMsgTxtFolderPath + "\\" + DateTime.Now.ToString("yyyy_M_dd--HH_mm_ss") + errorSource + "エラー.txt", errorMessage, fileEncoding);
+            }
+            
         }
 
+        //check if the outputErrMsgTxtFolderPath is set to be a network drive
+        private static bool IsANetworkDrive(string outputErrMsgTxtFolderPath)
+        {
+            if(outputErrMsgTxtFolderPath[0]== '\\' && outputErrMsgTxtFolderPath[0]== '\\')
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
     }
 }
