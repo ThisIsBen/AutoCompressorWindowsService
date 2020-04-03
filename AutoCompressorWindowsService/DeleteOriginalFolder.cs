@@ -101,7 +101,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
+                        ReportErrorMsg.displayPopUpErrMsg("フォルダー削除", errorMessage);
 
                         //wait a while before starting next retry
                         Thread.Sleep(DynamicConstants.retryTimeInterval);
@@ -114,13 +114,13 @@ namespace AutoCompressorWindowsService
                     {
 
                         //display this error message on the GUI window to inform the user
-                        errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 自動圧縮設定.txtに指定された圧縮する目標フォルダーから " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+                        errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
 
 
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
+                        ReportErrorMsg.displayPopUpErrMsg("フォルダー削除", errorMessage);
 
 
 
@@ -143,7 +143,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
+                        ReportErrorMsg.displayPopUpErrMsg("フォルダー削除", errorMessage);
 
                         //wait a while before starting next retry
                         Thread.Sleep(DynamicConstants.retryTimeInterval);
@@ -156,13 +156,13 @@ namespace AutoCompressorWindowsService
                     {
 
                         //display this error message on the GUI window to inform the user
-                        errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 自動圧縮設定.txtに指定された圧縮する目標フォルダーから " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+                        errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
 
 
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
+                        ReportErrorMsg.displayPopUpErrMsg("フォルダー削除", errorMessage);
 
 
 
@@ -185,7 +185,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
+                        ReportErrorMsg.displayPopUpErrMsg("フォルダー削除", errorMessage);
 
                         //wait a while before starting next retry
                         Thread.Sleep(DynamicConstants.retryTimeInterval);
@@ -198,13 +198,13 @@ namespace AutoCompressorWindowsService
                     {
 
                         //display this error message on the GUI window to inform the user
-                        errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 自動圧縮設定.txtに指定された圧縮する目標フォルダーから " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+                        errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
 
 
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
+                        ReportErrorMsg.displayPopUpErrMsg("フォルダー削除", errorMessage);
 
 
 
@@ -227,7 +227,7 @@ namespace AutoCompressorWindowsService
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
+                        ReportErrorMsg.displayPopUpErrMsg("フォルダー削除", errorMessage);
 
                         //wait a while before starting next retry
                         Thread.Sleep(DynamicConstants.retryTimeInterval);
@@ -240,13 +240,13 @@ namespace AutoCompressorWindowsService
                     {
 
                         //display this error message on the GUI window to inform the user
-                        errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 自動圧縮設定.txtに指定された圧縮する目標フォルダーから " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+                        errorMessage = targetDirectory + " フォルダーを圧縮完了しましたが、フォルダーを削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 " + targetDirectory + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
 
 
                         //output the error message to event log, 
                         //pop -up window,
                         //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                        ReportErrorMsg.displayErrMsg("フォルダー削除", errorMessage);
+                        ReportErrorMsg.displayPopUpErrMsg("フォルダー削除", errorMessage);
 
 
 
@@ -330,27 +330,207 @@ namespace AutoCompressorWindowsService
         //Wait until the specified folder is not in use, and then
         //delete it.
         public static void deleteAFileIfNotInUse(string targetFilePath)
-        {
-
-
-            //Wait for all the files to be not in use
-            waitUntilFileNotInUse(targetFilePath);
-
-
-            //Delete the file
-            File.Delete(targetFilePath);
-
-
-
-
-
-        }
-        //Wait for all the files to be not in use
-        public static async void waitUntilFileNotInUse(string targetFilePath)
-        {
-            //Check whether the folder exists, if no, don't do anything
+        { //Check whether the folder exists, if no, don't do anything
             if (File.Exists(targetFilePath))
             {
+                //Retry  when error occurs during compression.
+                for (int retryTimes = 1; retryTimes <= DynamicConstants.retryTimesLimit; retryTimes++)
+                {
+                    try
+                    {
+                        //indicate that the incomplete zip file created due to a network failure is cut is being deleted.
+                        EventLogHandler.outputLog("圧縮中断の"+targetFilePath + "　: " + "削除途中です。\n");
+
+                        //Wait for all the files to be not in use
+                        waitUntilFileNotInUse(targetFilePath);
+
+
+                        //Delete the file
+                        File.Delete(targetFilePath);
+
+
+
+                        return;
+                    }
+                    catch (UnauthorizedAccessException e)
+                    {
+                        string errorMessage = "";
+
+                        // If it's still within retry times limit
+                        if (retryTimes < DynamicConstants.retryTimesLimit)
+                        {
+
+                            //display this error message on the GUI window to inform the user
+                            errorMessage ="圧縮できていないZIPファイル"+ targetFilePath + " を削除する途中でエラーが発生しました。\n今もう一度削除してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
+
+                            //output the error message to event log, 
+                            //pop -up window,
+                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
+                            ReportErrorMsg.displayPopUpErrMsg("ファイル削除", errorMessage);
+
+                            //wait a while before starting next retry
+                            Thread.Sleep(DynamicConstants.retryTimeInterval);
+
+
+                        }
+
+                        //If it has reached the retry limit
+                        else
+                        {
+
+                            //display this error message on the GUI window to inform the user
+                            errorMessage = "圧縮できていないZIPファイル" + targetFilePath + " を削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 "+ targetFilePath + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+
+
+                            //output the error message to event log, 
+                            //pop -up window,
+                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
+                            ReportErrorMsg.displayPopUpErrMsg("ファイル削除", errorMessage);
+
+
+
+                            //Stop the AutoCompressorWindowsService
+                            Main.stopWindowsService("AutoCompressorWindowsService");
+                        }
+
+                    }
+                    catch (DirectoryNotFoundException e)
+                    {
+                        string errorMessage = "";
+
+                        // If it's still within retry times limit
+                        if (retryTimes < DynamicConstants.retryTimesLimit)
+                        {
+
+                            //display this error message on the GUI window to inform the user
+                            errorMessage = "圧縮できていないZIPファイル" + targetFilePath + " を削除する途中でエラーが発生しました。\n今もう一度削除してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
+
+                            //output the error message to event log, 
+                            //pop -up window,
+                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
+                            ReportErrorMsg.displayPopUpErrMsg("ファイル削除", errorMessage);
+
+                            //wait a while before starting next retry
+                            Thread.Sleep(DynamicConstants.retryTimeInterval);
+
+
+                        }
+
+                        //If it has reached the retry limit
+                        else
+                        {
+
+                            //display this error message on the GUI window to inform the user
+                            errorMessage = "圧縮できていないZIPファイル" + targetFilePath + " を削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 " + targetFilePath + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+
+
+                            //output the error message to event log, 
+                            //pop -up window,
+                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
+                            ReportErrorMsg.displayPopUpErrMsg("ファイル削除", errorMessage);
+
+
+
+
+                            //Stop the AutoCompressorWindowsService
+                            Main.stopWindowsService("AutoCompressorWindowsService");
+                        }
+                    }
+
+                    catch (IOException e)
+                    {
+                        string errorMessage = "";
+
+                        // If it's still within retry times limit
+                        if (retryTimes < DynamicConstants.retryTimesLimit)
+                        {
+
+                            //display this error message on the GUI window to inform the user
+                            errorMessage = "圧縮できていないZIPファイル" + targetFilePath + " を削除する途中でエラーが発生しました。\n今もう一度削除してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
+
+                            //output the error message to event log, 
+                            //pop -up window,
+                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
+                            ReportErrorMsg.displayPopUpErrMsg("ファイル削除", errorMessage);
+
+                            //wait a while before starting next retry
+                            Thread.Sleep(DynamicConstants.retryTimeInterval);
+
+
+                        }
+
+                        //If it has reached the retry limit
+                        else
+                        {
+
+                            //display this error message on the GUI window to inform the user
+                            errorMessage = "圧縮できていないZIPファイル" + targetFilePath + " を削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 " + targetFilePath + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+
+
+                            //output the error message to event log, 
+                            //pop -up window,
+                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
+                            ReportErrorMsg.displayPopUpErrMsg("ファイル削除", errorMessage);
+
+
+
+
+                            //Stop the AutoCompressorWindowsService
+                            Main.stopWindowsService("AutoCompressorWindowsService");
+                        }
+                    }
+
+                    catch (SecurityException e)
+                    {
+                        string errorMessage = "";
+
+                        // If it's still within retry times limit
+                        if (retryTimes < DynamicConstants.retryTimesLimit)
+                        {
+
+                            //display this error message on the GUI window to inform the user
+                            errorMessage = "圧縮できていないZIPファイル" + targetFilePath + " を削除する途中でエラーが発生しました。\n今もう一度削除してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
+
+                            //output the error message to event log, 
+                            //pop -up window,
+                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
+                            ReportErrorMsg.displayPopUpErrMsg("ファイル削除", errorMessage);
+
+                            //wait a while before starting next retry
+                            Thread.Sleep(DynamicConstants.retryTimeInterval);
+
+
+                        }
+
+                        //If it has reached the retry limit
+                        else
+                        {
+
+                            //display this error message on the GUI window to inform the user
+                            errorMessage = "圧縮できていないZIPファイル" + targetFilePath + " を削除する途中でエラーが発生しました。\n今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 " + targetFilePath + " を手動で削除する\n\nStep2 AutoCompressorWindowsServiceを再起動してください。\n";
+
+
+                            //output the error message to event log, 
+                            //pop -up window,
+                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
+                            ReportErrorMsg.displayPopUpErrMsg("ファイル削除", errorMessage);
+
+
+
+
+                            //Stop the AutoCompressorWindowsService
+                            Main.stopWindowsService("AutoCompressorWindowsService");
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
+        //Async Wait for all the files to be not in use
+        public static async void waitUntilFileNotInUse(string targetFilePath)
+        {
+            
 
                 FileInfo currentFileInfo = new FileInfo(targetFilePath);
 
@@ -367,7 +547,7 @@ namespace AutoCompressorWindowsService
                 }
 
 
-            }
+            
 
 
 
@@ -380,8 +560,41 @@ namespace AutoCompressorWindowsService
 
 
         }
+        */
+        
+        //Sync Wait for all the files to be not in use
+        public static void waitUntilFileNotInUse(string targetFilePath)
+        {
 
 
+            FileInfo currentFileInfo = new FileInfo(targetFilePath);
+
+
+            //if the file is in use wait for a while and check again
+            while (IsFileInUse(currentFileInfo) == true)
+            {
+                //error occurs when delete an occupied file
+                // wait for a while if the file is being used by another process
+                Thread.Sleep(DynamicConstants.waitReadyToBeDeleteTimeInterval);
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
 
         //Delete ALL original folders after compression finishes
         private void deleteWholeOriginalFolderAfterCompress(string targetFolder)

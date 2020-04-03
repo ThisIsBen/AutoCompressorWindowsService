@@ -15,7 +15,7 @@ namespace AutoCompressorWindowsService
 
 
         //To display error message to the user
-        public static void displayErrMsg(string errorSource,string errorMessage)
+        public static void displayPopUpErrMsg(string errorSource,string errorMessage)
         {
             //output an error message to event log to indicate that which folder
             //can not be accessed.

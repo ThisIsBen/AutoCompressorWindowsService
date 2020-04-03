@@ -20,7 +20,7 @@ namespace AutoCompressorWindowsService
         //public static string userAutoCompressorSettingsTxtFile = @"C:\Users\KNK07529\Desktop\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
 
         //public static string userAutoCompressorSettingsTxtFile = @"C:\Users\N180742\Desktop\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
-        public static string userAutoCompressorSettingsTxtFile = @"C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
+        public static string userAutoCompressorSettingsTxtFile = @"C:\Users\KNK09087\Documents\siga_Lets_Note_PC\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
 
         //run on the factory PC
         //public static string userAutoCompressorSettingsTxtFile = @"C:\Users\M171183.M17-1183\Desktop\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
@@ -33,7 +33,7 @@ namespace AutoCompressorWindowsService
         //public static string backupDictJSONFile = @"C:\Users\KNK07529\Desktop\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
         
         //public static string backupDictJSONFile = @"C:\Users\N180742\Desktop\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
-        public static string backupDictJSONFile = @"C:\Users\KNK09087\Documents\siga_Lets Note PC\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
+        public static string backupDictJSONFile = @"C:\Users\KNK09087\Documents\siga_Lets_Note_PC\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
         
         //run on the factory PC
         //public static string backupDictJSONFile = @"C:\Users\M171183.M17-1183\Desktop\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
@@ -43,7 +43,7 @@ namespace AutoCompressorWindowsService
         //wait for files to be ready to be deleted
         //when deleting the files if the files are still in use,
         //wait for this time interval and try to delete it again.
-        public static int waitReadyToBeDeleteTimeInterval = 60 * 1000;//10 second
+        public static int waitReadyToBeDeleteTimeInterval = 10 * 1000;//20 second
 
 
         //毎日圧縮するフォルダ数の最大限
@@ -55,8 +55,14 @@ namespace AutoCompressorWindowsService
         //Retry times when error occurs during compression.
         public static int retryTimesLimit = 3;
 
+
+
         //The time interval between 2 retries when error occurs during compression
-        public static int retryTimeInterval = 20 * 1000;
+    //:::It must be larger than waitReadyToBeDeleteTimeInterval::::
+        public static int retryTimeInterval = 40 * 1000;
+    //:::It must be larger than waitReadyToBeDeleteTimeInterval::::
+
+
         /*
         //to record the txt file that contains the user's settings of the AutoCompressorWindowsService
         public static string backupDictXMLFile = @"C:\Users\KNK09087\source\repos\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.xml";
