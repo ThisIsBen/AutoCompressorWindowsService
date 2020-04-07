@@ -60,9 +60,17 @@ namespace AutoCompressorWindowsService
         //The time interval between 2 retries when error occurs during compression
     //:::It must be larger than waitReadyToBeDeleteTimeInterval::::
         public static int retryTimeInterval = 40 * 1000;
-    //:::It must be larger than waitReadyToBeDeleteTimeInterval::::
+        //:::It must be larger than waitReadyToBeDeleteTimeInterval::::
 
 
+        #region 圧縮一時停止する
+        //used to indicate if pause has happened in 今日の圧縮
+        public static bool HasPauseHappened=false;
+    　　public static DateTime progamStartDate=DateTime.Today;
+        #endregion
+
+
+        
         /*
         //to record the txt file that contains the user's settings of the AutoCompressorWindowsService
         public static string backupDictXMLFile = @"C:\Users\KNK09087\source\repos\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.xml";

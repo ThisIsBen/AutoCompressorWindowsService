@@ -341,9 +341,10 @@ namespace AutoCompressorWindowsService
                         //indicate that the incomplete zip file created due to a network failure is cut is being deleted.
                         EventLogHandler.outputLog("圧縮中断の"+targetFilePath + "　: " + "削除途中です。\n");
 
+                        
                         //Wait for all the files to be not in use
                         waitUntilFileNotInUse(targetFilePath);
-
+                        
 
                         //Delete the file
                         File.Delete(targetFilePath);

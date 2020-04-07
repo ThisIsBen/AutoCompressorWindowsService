@@ -18,11 +18,17 @@ namespace AutoCompressorWindowsService
         //compressedFolderName dictionary is used to record all the folder name that has been compressed.
         public Dictionary<string, string> compressedFolderNameDict = new Dictionary<string, string>();
 
+        //to indicate if the current compression is failed
+        private static bool IsCompressionFailed = false;
+
+        //to record the error message during compression
+        private static string compressionErrorMessage;
 
         //Compress a folder to create a ZIP file
-        public void createZIPFile(string targetFolderPath,string storagePathWithZIPFilename,string currentFolderName)
+        public void createZIPFile(string targetFolderPath,string storageFolderName,string currentFolderName)
         {
-           
+
+            string storagePathWithZIPFilename=storageFolderName + "\\" + currentFolderName + ".zip";
             //if there is a zip file with the same name exists,
             //do nothing to avoid overwrite old zip file
             //else, compress and create zip file as usual
@@ -33,398 +39,134 @@ namespace AutoCompressorWindowsService
                 for (int retryTimes=1; retryTimes <= DynamicConstants.retryTimesLimit; retryTimes++)
                 {
 
-               
-
-                    try
+                    //delelte the not-complete zip file which is created 
+                    //in the previous compression error before retry  
+                    if (retryTimes > 1)
                     {
-                       
+                        /*
+                        //delete the not-complete zip file which is created 
+                        //in the previous compression error before retry               
+                        DeleteOriginalFolder.deleteAFileIfNotInUse(storagePathWithZIPFilename);
 
-                        if(retryTimes >1)
+                        //indicate that the not-complete zip file has been deleted.
+                        EventLogHandler.outputLog("圧縮できていない"+currentFolderName + "を自動的に削除しました。\n");
+                        */
+                        string retryFolderName;
+                        if (retryTimes == 1)
                         {
-                            //delete the not-complete zip file which is created 
-                            //in the previous compression error               
-                            DeleteOriginalFolder.deleteAFileIfNotInUse(storagePathWithZIPFilename);
-
-                            //indicate that the not-complete zip file has been deleted.
-                            EventLogHandler.outputLog("圧縮できていない"+currentFolderName + "を自動的に削除しました。\n");
+                            retryFolderName = currentFolderName;
 
                         }
+                        else
+                        {
+                            retryFolderName = currentFolderName+ "_retry" + retryTimes;
+                        }
+                        //rename the output ZIP file when retry
+                        //because we can not delete the incomplete ZIP file created in the previous compression
+                        EventLogHandler.outputLog("圧縮できていない" + retryFolderName + "のZIPファイル名を" + currentFolderName + "_retry" + retryTimes + "に変更し、\nもう一度圧縮してみます。\n");
 
                         //indicate that which folder is being compressed currently.
+                        EventLogHandler.outputLog(currentFolderName + "_retry" + retryTimes + ": " + "圧縮途中です。\n");
+
+
+
+
+                        string manuallyDelInCompleteZIPFileMsg= "圧縮できていない" + retryFolderName + "を手動で削除してください。\n";
+
+                        ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", manuallyDelInCompleteZIPFileMsg);
+
+                        //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                        //if there is network connection
+                        ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", manuallyDelInCompleteZIPFileMsg, DynamicConstants.errorMessageTxtFolderPath);
+
+                        //rename the output ZIP file for this retry
+                        storagePathWithZIPFilename = storageFolderName + "\\" + currentFolderName + "_retry" + retryTimes + ".zip";
+                    }
+                    else
+                    {
+                        //indicate that which folder is being compressed currently.
                         EventLogHandler.outputLog(currentFolderName + ": " + "圧縮途中です。\n");
-                        //compress the folder to a ZIP file
-                        ZipFile.CreateFromDirectory(targetFolderPath, storagePathWithZIPFilename, CompressionLevel.Optimal, false);
-
-                        //compress next folder if no error occurs
-                        break;
                     }
-                    catch (UnauthorizedAccessException e)
-                    {
+                        //use a thread to compress the folderto a ZIP file
+                        //so that we can kill the thread and delete the incomplete ZIP file for retry
+                        //when the compression is stopped due to a network error.
+                        Thread compressAFolderThread = new Thread(() => compressAFolderTask(targetFolderPath, storagePathWithZIPFilename));
 
-                        string errorMessage="";
+                        //start the compressAFolderThread to compress the folder
+                        compressAFolderThread.Start();
 
+                        //wait for the compressAFolderThread to finish compressing the folder
+                        compressAFolderThread.Join();
 
-                        //If it's still within retry times limit
-                        if (retryTimes< DynamicConstants.retryTimesLimit)
+                        //if an error occurs during compression
+                        //we output error message and retry 
+                        if(IsCompressionFailed==true)
                         {
-         
+                            string errorMessage = "";
 
-                            
 
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n今もう一度圧縮してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
+                            //If it's still within retry times limit
+                            if (retryTimes < DynamicConstants.retryTimesLimit)
+                            {
 
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
+                                //reset the IsCompressionFailed to false
+                                IsCompressionFailed = false;
+                                //display this error message on the GUI window to inform the user
+                                errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n今もう一度圧縮してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + compressionErrorMessage;
 
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
+                                //output the error message to event log, 
+                                //pop -up window,
+                                //and the 圧縮ソフト_エラーメッセージ folder in NAS
+                                ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
 
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
+                                //wait a while before starting next retry
+                                Thread.Sleep(DynamicConstants.retryTimeInterval);
 
+                                //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                                //if there is network connection
+                                ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
+
+                            }
+
+                            //If it has reached the retry limit
+                            else
+                            {
+
+
+
+
+                                //display this error message on the GUI window to inform the user
+                                errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + compressionErrorMessage + "\n\n" + "解決手順：\nStep1 圧縮できていない" + currentFolderName + ".zipを手動で削除する\n\nStep2 エラーを解決する\n\nStep3 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
+
+                                //output the error message to event log, 
+                                //pop -up window,
+                                //and the 圧縮ソフト_エラーメッセージ folder in NAS
+                                ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
+
+                                //wait a while before starting next retry
+                                Thread.Sleep(DynamicConstants.retryTimeInterval);
+
+                                //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                                ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
+
+
+                                //Stop the AutoCompressorWindowsService
+                                Main.stopWindowsService("AutoCompressorWindowsService");
+                            }
                         }
 
-                        //If it has reached the retry limit
+                        //if the compression is done successfully
+                        //proceed to do the following works
                         else
                         {
-
-                           
-
-                            
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 圧縮できていない" + currentFolderName + ".zipを手動で削除する\n\nStep2 エラーを解決する\n\nStep3 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                            //Stop the AutoCompressorWindowsService
-                            Main.stopWindowsService("AutoCompressorWindowsService");
+                            //compress the next folder if no error occurs
+                            break;
                         }
-
-                        
-                        
-                    }
-                    catch (DirectoryNotFoundException e)
-                    {
-                        string errorMessage = "";
-
-
-                        //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesLimit)
-                        {
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n今もう一度圧縮してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                        }
-
-                        //If it has reached the retry limit
-                        else
-                        {
-
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 圧縮できていない" + currentFolderName + ".zipを手動で削除する\n\nStep2 エラーを解決する\n\nStep3 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                            //Stop the AutoCompressorWindowsService
-                            Main.stopWindowsService("AutoCompressorWindowsService");
-                        }
-                    }
-                    catch (ArgumentNullException e)
-                    {
-                        string errorMessage = "";
-
-
-                        //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesLimit)
-                        {
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n今もう一度圧縮してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-                        }
-
-                        //If it has reached the retry limit
-                        else
-                        {
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 圧縮できていない" + currentFolderName + ".zipを手動で削除する\n\nStep2 エラーを解決する\n\nStep3 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                            //Stop the AutoCompressorWindowsService
-                            Main.stopWindowsService("AutoCompressorWindowsService");
-                        }
-                    }
-                    catch (ArgumentException e)
-                    {
-                        string errorMessage = "";
-
-
-                        //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesLimit)
-                        {
-
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n今もう一度圧縮してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                        }
-
-                        //If it has reached the retry limit
-                        else
-                        {
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 圧縮できていない" + currentFolderName + ".zipを手動で削除する\n\nStep2 エラーを解決する\n\nStep3 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                            //Stop the AutoCompressorWindowsService
-                            Main.stopWindowsService("AutoCompressorWindowsService");
-                        }
-                    }
-                    catch (PathTooLongException e)
-                    {
-                        string errorMessage = "";
-
-
-                        //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesLimit)
-                        {
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n今もう一度圧縮してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                        }
-
-                        //If it has reached the retry limit
-                        else
-                        {
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 圧縮できていない" + currentFolderName + ".zipを手動で削除する\n\nStep2 エラーを解決する\n\nStep3 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                            //Stop the AutoCompressorWindowsService
-                            Main.stopWindowsService("AutoCompressorWindowsService");
-                        }
-                    }
-                    catch (IOException e)
-                    {
-                        string errorMessage = "";
-
-
-                        //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesLimit)
-                        {
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n今もう一度圧縮してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                        }
-
-                        //If it has reached the retry limit
-                        else
-                        {
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 圧縮できていない" + currentFolderName + ".zipを手動で削除する\n\nStep2 エラーを解決する\n\nStep3 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                            //Stop the AutoCompressorWindowsService
-                            Main.stopWindowsService("AutoCompressorWindowsService");
-                        }
-                    }
-                    catch (NotSupportedException e)
-                    {
-                        string errorMessage = "";
-
-
-                        //If it's still within retry times limit
-                        if (retryTimes < DynamicConstants.retryTimesLimit)
-                        {
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。\n今もう一度圧縮してみます。\n今回は " + retryTimes + "回目のRetryです。\n\n" + "エラーメッセージ：\n" + e.Message;
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-
-                        }
-
-                        //If it has reached the retry limit
-                        else
-                        {
-                            //display this error message on the GUI window to inform the user
-                            errorMessage = currentFolderName + " フォルダー圧縮途中でエラーが発生しました。今回は " + retryTimes + "回目のRetryです。\nRetry回数の上限に達しましたので、\n圧縮ソフト(AutoCompressorWindowsService)が停止されました。\n\n" + "エラーメッセージ：\n" + e.Message + "\n\n" + "解決手順：\nStep1 圧縮できていない" + currentFolderName + ".zipを手動で削除する\n\nStep2 エラーを解決する\n\nStep3 圧縮ソフト(AutoCompressorWindowsService)を再起動してください。\n";
-
-                            //output the error message to event log, 
-                            //pop -up window,
-                            //and the 圧縮ソフト_エラーメッセージ folder in NAS
-                            ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
-
-                            //wait a while before starting next retry
-                            Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-
-                            //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
-                            //if there is network connection
-                            ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
-
-
-                            //Stop the AutoCompressorWindowsService
-                            Main.stopWindowsService("AutoCompressorWindowsService");
-                        }
-                    }
+                       
+                    
+                   
+
+                    
 
                 }
 
@@ -461,6 +203,40 @@ namespace AutoCompressorWindowsService
 
 
         }
+
+        //the task that compressAFolderThread will execute to compress a folder
+
+        //use a thread to compress the folderto a ZIP file
+        //so that we can kill the thread and delete the incomplete ZIP file
+        //when the compression is stopped due to a network error.
+
+        public void compressAFolderTask(string targetFolderPath, string storagePathWithZIPFilename)
+        {
+            try
+            {
+                //compress the folder to a ZIP file
+                ZipFile.CreateFromDirectory(targetFolderPath, storagePathWithZIPFilename, CompressionLevel.Optimal, false);
+
+            }
+            catch(Exception e)
+            {
+                //to record that current compression failed
+                IsCompressionFailed = true;
+
+                //record the error message during compression
+                compressionErrorMessage = e.Message;
+
+                //abort the thread to release the folder and the zip file it holds
+                //so that we can delete the zip file for the retry
+                Thread.CurrentThread.Abort();
+
+            }
+
+
+
+
+        }
+
 
         //Get free space of the drive selected by the user.
         public double getDiskFreeSpace(string NASDriveName)
@@ -540,15 +316,46 @@ namespace AutoCompressorWindowsService
                                     //accumulate the number of folder to be compressed in today's compression
                                     countTodayCompressFolderNum = countTodayCompressFolderNum + 1;
 
-                                    //compressedFolderNameDict.Add(currentFolderName, "");
+                            //compressedFolderNameDict.Add(currentFolderName, "");
 
-                                    /*
-                                     //check compress order 
-                                     EventLogHandler.outputLog("Start to compress "+currentFolderName );
-                                    */
+                            /*
+                             //check compress order 
+                             EventLogHandler.outputLog("Start to compress "+currentFolderName );
+                            */
+
+                                    //If the user specified the 毎日何時に圧縮一時停止するのか（24時間制） and 毎日何時に圧縮再開するのか（24時間制）
+                                    if (ReadInUserSettings.IsPauseTimeSet())
+                                    {
+                                        //if a day has passed since the program started running
+                                        if(DynamicConstants.progamStartDate< DateTime.Today)
+                                        {
+                                            //reset the DynamicConstants.HasPauseHappened
+                                            //to pause the program for the new day
+                                            DynamicConstants.HasPauseHappened = false;
+                                        }
+
+                                        //Check whether it is later than the pause time(under the condition that pause has not happened in 今日の圧縮 ) 
+                                        //or within an hour to reach the pause time set by the user
+                                        if ((DynamicConstants.HasPauseHappened==false && DateTime.Now >= ReadInUserSettings.getPauseStartTime())
+                                                   ||  (ReadInUserSettings.getPauseStartTime().Subtract(DateTime.Now).Minutes < 60 && ReadInUserSettings.getPauseStartTime().Subtract(DateTime.Now).Minutes>=0))
+                                        {
+                                            EventLogHandler.outputLog("設定された圧縮一時停止する時間：" + ReadInUserSettings.getUserSpecifiedPauseStartTime+ "より遅くなった、\nまたは一時停止する時間まであと一時間以内になったので、圧縮は一時停止する。\n設定された再開時間："+ReadInUserSettings.getUserSpecifiedPauseEndTime+"になったら、自動的に再開する。\n");
+
+
+                                            // pause the program until the resume time set by the user comes
+                                            Thread.Sleep(ReadInUserSettings.getPauseTimePeriod());
+
+                                            EventLogHandler.outputLog("今は設定された再開時間："+ ReadInUserSettings.getUserSpecifiedPauseEndTime+"です、\n圧縮は自動的に再開する。\n");
+
+                                            //set the DynamicConstants.HasPauseHappened to true
+                                            //so that it will not pause again within today
+                                            DynamicConstants.HasPauseHappened = true;
+                                        }
+
+                                    }
 
                                     //compress the folder
-                                    createZIPFile(currentFolderFullPath, ZIPStorageFolder + "\\" + currentFolderName + ".zip", currentFolderName);
+                                    createZIPFile(currentFolderFullPath, ZIPStorageFolder , currentFolderName);
 
                                     /*
                                     //check compress order 

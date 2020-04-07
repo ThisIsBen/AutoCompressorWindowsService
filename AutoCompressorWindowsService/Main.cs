@@ -12,13 +12,14 @@ using System.Text;
 
 using System.Threading.Tasks;
 using System.Timers;
+using System.Threading;
 
 namespace AutoCompressorWindowsService
 {
     public partial class Main : ServiceBase
     {
         //create timer 
-        private Timer timer;
+        private System.Timers.Timer timer;
         //create AutoCompressor object
         private AutoCompressor autoCompressorObj;
         //create ReadInUserSettings object
@@ -60,8 +61,13 @@ namespace AutoCompressorWindowsService
             //read in the user's AutoCompressor settings from a txt file
             readInUserSettings = new ReadInUserSettings();
 
+            //When the AutoCompressorWindowsService is activated,
+            //recover the content of the Dictionary that records 
+            //which folder has been compressed 
+            recoverDictFromFile();
+
             //set up timer
-            timer = new Timer();
+            timer = new System.Timers.Timer();
 
             timer.Elapsed += new ElapsedEventHandler(AutoFolderCompressorTimer_Elapsed);
 
@@ -70,10 +76,7 @@ namespace AutoCompressorWindowsService
             timer.Start();
 
 
-            //When the AutoCompressorWindowsService is activated,
-            //recover the content of the Dictionary that records 
-            //which folder has been compressed 
-            recoverDictFromFile();
+           
 
 
            
@@ -109,64 +112,75 @@ namespace AutoCompressorWindowsService
             lock (_lockObject)
             {
 
-                //Check whether the compression time set by the user comes
-                if (IsCompressionTime())
-            {
+               
 
+                
+                    //Check whether the compression time set by the user comes
+                    if (IsCompressionTime())
+                    {
 
+                       
+                        //stop the timer for compressing folders
+                        //because when the user sets the 何日前のデータを圧縮して保存するか（単位：日）:
+                        //in the 自動圧縮設定.txt　to be very big like compressing all the 
+                        //folders created 1 day ago,
+                        //it will take more than 1 day to finish all the compression process.
 
-                //stop the timer for compressing folders
-                //because when the user sets the 何日前のデータを圧縮して保存するか（単位：日）:
-                //in the 自動圧縮設定.txt　to be very big like compressing all the 
-                //folders created 1 day ago,
-                //it will take more than 1 day to finish all the compression process.
-
-                //If we do not stop the timer, the program will start again in the next day 
-                //before all the compression process ends. 
-                //Some task will be done again and maybe some error will occur.
-                timer.Stop();
-
-
-
-
-
-
-                //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
-                //to be "Yes" in the 自動圧縮設定.txt,
-                //we delete the original folder after compression
-                if (whetherDeleteAfterCompress() == true)
-                {
-                    //Compress folders according to the user's settings
-                    compressFolderAccordingToSettings("DeleteAfterCompress");
-
-                }
-
-                //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
-                //to be "No" in the 自動圧縮設定.txt,
-                //we do not do anything after compression
-                else
-                {
-                    //Compress folders according to the user's settings
-                    compressFolderAccordingToSettings();
-
-                }
+                        //If we do not stop the timer, the program will start again in the next day 
+                        //before all the compression process ends. 
+                        //Some task will be done again and maybe some error will occur.
+                        timer.Stop();
 
 
 
 
-                //Check the free disk space 
-                checkFreeDiskSpace();
 
 
-                //Every time after AutoCompressorWindowsService finishes all its work,
-                //back up the content of the Dictionary that records 
-                //which folder has been compressed                
-                backupDictToFile();
+                        //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
+                        //to be "Yes" in the 自動圧縮設定.txt,
+                        //we delete the original folder after compression
+                        if (whetherDeleteAfterCompress() == true)
+                        {
+                            //Compress folders according to the user's settings
+                            compressFolderAccordingToSettings("DeleteAfterCompress");
+
+                        }
+
+                        //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
+                        //to be "No" in the 自動圧縮設定.txt,
+                        //we do not do anything after compression
+                        else
+                        {
+                            //Compress folders according to the user's settings
+                            compressFolderAccordingToSettings();
+
+                        }
 
 
-                //start the timer again after all the compression process finishes
-                timer.Start();
-            }
+
+
+                        //Check the free disk space 
+                        checkFreeDiskSpace();
+
+
+                        //Every time after AutoCompressorWindowsService finishes all its work,
+                        //back up the content of the Dictionary that records 
+                        //which folder has been compressed                
+                        backupDictToFile();
+
+
+                        EventLogHandler.outputLog("今日の圧縮全部完成しました。\n");
+
+                        //sleep until 5 seconds before the compression of the next day
+                        Thread.Sleep(sleepUntilNextDayCompression());
+
+                        //start the timer again after all the compression process finishes
+                        timer.Start();
+
+
+                    }
+                
+                
 
             }
             
@@ -184,6 +198,7 @@ namespace AutoCompressorWindowsService
             return false;
         }
 
+        TimeSpan compressionTime;
         //Check whether the compression time set by the user comes
         private bool IsCompressionTime()
         {
@@ -193,7 +208,7 @@ namespace AutoCompressorWindowsService
             int userCompressionTimeMinute = int.Parse(userCompressionTime[1]);
 
             //compose the compression time set by the user as TimeSpan 
-            TimeSpan compressionTime = new TimeSpan(userCompressionTimeHour, userCompressionTimeMinute, 0); //10 o'clock
+            compressionTime = new TimeSpan(userCompressionTimeHour, userCompressionTimeMinute, 0); //10 o'clock
             //get current time
             TimeSpan now = DateTime.Now.TimeOfDay;
            
@@ -206,6 +221,32 @@ namespace AutoCompressorWindowsService
             }
 
             return false;
+        }
+
+
+       public TimeSpan sleepUntilNextDayCompression()
+        {
+
+            DateTime nextCompressionTime;
+
+            TimeSpan timeSpanUntilNextCompression;
+
+           if (DateTime.Today+compressionTime >= DateTime.Now)
+            {
+                 nextCompressionTime = DateTime.Today + compressionTime;
+                 
+            }
+
+            else
+            {
+                nextCompressionTime = DateTime.Today.AddDays(1) + compressionTime;
+
+            }
+
+            timeSpanUntilNextCompression = nextCompressionTime.AddSeconds(-5) - DateTime.Now;
+
+            return timeSpanUntilNextCompression;
+
         }
 
 

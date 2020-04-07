@@ -22,6 +22,8 @@ namespace AutoCompressorWindowsService
         private string NASDriveName;
         private string whetherDeleteFolderAfterCompress;
 
+        private static string pauseStartTime="";
+        private static string pauseEndTime="";
 
 
         //Assign the values read from the 自動圧縮設定.txt for the settings of the AutoCompressor
@@ -38,6 +40,17 @@ namespace AutoCompressorWindowsService
             NASDriveName = userAutoCompressorSettingsList[5];
             whetherDeleteFolderAfterCompress = userAutoCompressorSettingsList[6];
 
+
+            if (userAutoCompressorSettingsList.Count > 8)
+            {
+                //毎日何時に圧縮一時停止するのか（24時間制）
+                pauseStartTime = userAutoCompressorSettingsList[7];
+            
+          
+                //毎日何時に圧縮再開するのか（24時間制）
+                pauseEndTime = userAutoCompressorSettingsList[8];
+            }
+            
 
 
 
@@ -139,6 +152,77 @@ namespace AutoCompressorWindowsService
 
             get { return this.whetherDeleteFolderAfterCompress; }
         }
+        //Return the value of 圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください)
+        public static string getUserSpecifiedPauseEndTime
+        {
 
-    }
+            get { return pauseEndTime; }
+        }
+
+        public static string getUserSpecifiedPauseStartTime
+        {
+
+            get { return pauseStartTime; }
+        }
+        public static bool IsPauseTimeSet()
+        {
+            if (pauseStartTime != "" && pauseEndTime != "")
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        //Return the value of 毎日何時に圧縮一時停止するのか（24時間制）
+        public static DateTime getPauseStartTime()
+        {
+             
+                string[] pauseStartTimeStr = pauseStartTime.Split(':');
+                int pauseStartTimeHour = int.Parse(pauseStartTimeStr[0]);
+                int pauseStartTimeMinute = int.Parse(pauseStartTimeStr[1]);
+
+                //compose the pause time set by the user as TimeSpan 
+                TimeSpan pauseStartTimeSpan = new TimeSpan(pauseStartTimeHour, pauseStartTimeMinute, 0);
+
+                DateTime pauseStartDateTime = DateTime.Today + pauseStartTimeSpan;
+
+                return pauseStartDateTime;
+           
+
+        }
+        //Return the time period that the program should pause
+        public static TimeSpan getPauseTimePeriod()
+        {
+            
+                string[] pauseEndTimeStr = pauseEndTime.Split(':');
+                int pauseEndTimeHour = int.Parse(pauseEndTimeStr[0]);
+                int pauseEndTimeMinute = int.Parse(pauseEndTimeStr[1]);
+
+                //compose the resume time set by the user as TimeSpan 
+                TimeSpan pauseEndTimeSpan = new TimeSpan(pauseEndTimeHour, pauseEndTimeMinute, 0);
+
+
+                TimeSpan now = DateTime.Now.TimeOfDay;
+
+                DateTime pauseEndDateTime;
+                if (now.Hours > pauseEndTimeSpan.Hours)
+                {
+                    pauseEndDateTime = DateTime.Today.AddDays(1) + pauseEndTimeSpan;
+                }
+                else
+                {
+                    pauseEndDateTime = DateTime.Today + pauseEndTimeSpan;
+                }
+
+
+
+                TimeSpan pauseTimePeriod = pauseEndDateTime - DateTime.Now;
+
+
+
+                return pauseTimePeriod;
+           
+        }
+}
 }
