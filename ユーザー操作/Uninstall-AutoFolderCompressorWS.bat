@@ -16,7 +16,7 @@ SET PATH=%PATH%;%DOTNETFX4%
 
 ECHO Uninstalling AutoCompressorWindowsService...
 ECHO ---------------------------------------------------
-InstallUtil /u ..\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.exe
+InstallUtil /u ..\AutoCompressorWindowsService\bin\Release\AutoCompressorWindowsService.exe
 ECHO ---------------------------------------------------
 ECHO Done.
 PAUSE

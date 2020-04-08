@@ -17,10 +17,12 @@ namespace AutoCompressorWindowsService
 
         //to record the txt file that contains the user's settings of the AutoCompressorWindowsService
         //run on 鈴木さんPC
-        //public static string userAutoCompressorSettingsTxtFile = @"C:\Users\KNK07529\Desktop\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
+        public static string userAutoCompressorSettingsTxtFile = @"C:\Users\KNK07529\Desktop\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
 
         //public static string userAutoCompressorSettingsTxtFile = @"C:\Users\N180742\Desktop\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
-        public static string userAutoCompressorSettingsTxtFile = @"C:\Users\KNK09087\Documents\siga_Lets_Note_PC\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
+
+        //Run On Ben PC
+        //public static string userAutoCompressorSettingsTxtFile = @"C:\Users\KNK09087\Documents\siga_Lets_Note_PC\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
 
         //run on the factory PC
         //public static string userAutoCompressorSettingsTxtFile = @"C:\Users\M171183.M17-1183\Desktop\AutoCompressorWindowsService\ユーザー操作\自動圧縮設定.txt";
@@ -30,10 +32,11 @@ namespace AutoCompressorWindowsService
 
         //to record the txt file that contains the user's settings of the AutoCompressorWindowsService
         //run on 鈴木さんPC
-        //public static string backupDictJSONFile = @"C:\Users\KNK07529\Desktop\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
-        
+        public static string backupDictJSONFile = @"C:\Users\KNK07529\Desktop\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
+
         //public static string backupDictJSONFile = @"C:\Users\N180742\Desktop\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
-        public static string backupDictJSONFile = @"C:\Users\KNK09087\Documents\siga_Lets_Note_PC\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
+        //Run On Ben PC
+        //public static string backupDictJSONFile = @"C:\Users\KNK09087\Documents\siga_Lets_Note_PC\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";
         
         //run on the factory PC
         //public static string backupDictJSONFile = @"C:\Users\M171183.M17-1183\Desktop\AutoCompressorWindowsService\ユーザー操作\圧縮済みフォルダー記録.json";

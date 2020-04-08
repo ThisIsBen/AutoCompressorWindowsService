@@ -16,7 +16,7 @@ SET PATH=%PATH%;%DOTNETFX4%
 
 ECHO Installing AutoCompressorWindowsService...
 ECHO ---------------------------------------------------
-InstallUtil /i ..\AutoCompressorWindowsService\bin\Debug\AutoCompressorWindowsService.exe
+InstallUtil /i ..\AutoCompressorWindowsService\bin\Release\AutoCompressorWindowsService.exe
 ECHO ---------------------------------------------------
 ECHO Done.
 PAUSE
