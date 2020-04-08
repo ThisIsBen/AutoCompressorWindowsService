@@ -46,6 +46,7 @@ namespace AutoCompressorWindowsService
 
                 }
 
+                //shut down the Windows Service if error occurs during compression
                 catch (Exception e)
                 {
                     //display this error message on the GUI window to inform the user
