@@ -449,7 +449,7 @@ namespace AutoCompressorWindowsService
             //Check whether it is later than the pause time(under the condition that pause has not happened in 今日の圧縮 ) 
             //or within an hour to reach the pause time set by the user
             if ((DynamicConstants.HasPauseHappened == false && DateTime.Now >= ReadInUserSettings.getPauseStartTime())
-                       || (ReadInUserSettings.getPauseStartTime().Subtract(DateTime.Now).Minutes < 60 && ReadInUserSettings.getPauseStartTime().Subtract(DateTime.Now).Minutes >= 0))
+                       || (ReadInUserSettings.getPauseStartTime().Subtract(DateTime.Now).Minutes>=0 && ReadInUserSettings.getPauseStartTime().Subtract(DateTime.Now).Hours == 0))
             {
                 EventLogHandler.outputLog("設定された圧縮一時停止する時間：" + ReadInUserSettings.getUserSpecifiedPauseStartTime + "より遅くなった、\nまたは一時停止する時間まであと一時間以内になったので、圧縮は一時停止する。\n設定された再開時間：" + ReadInUserSettings.getUserSpecifiedPauseEndTime + "になったら、自動的に再開する。\n");
 
