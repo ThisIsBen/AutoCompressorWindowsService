@@ -35,7 +35,13 @@ namespace AutoCompressorWindowsService
         }
 
         //Wait for all the files to be not in use
-        public static async void waitUntilFolderNotInUse(string targetDirectory)
+
+        //With "async" this function will be run asynchronously
+        //and the code after this function call will be run before this function finishes.
+        /*
+        private static async void waitUntilFolderNotInUse(string targetDirectory)
+        */
+        private static void waitUntilFolderNotInUse(string targetDirectory)
         {
                 //Recurse into subdirectories of this directory.
                 string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
@@ -53,7 +59,13 @@ namespace AutoCompressorWindowsService
                         {
 
                             // wait for a while
+                            //With "await Task.Delay" this function will be run asynchronously
+                            //and the code after this function call will be run before this function finishes.
+                            /*
                             await Task.Delay(DynamicConstants.waitReadyToBeDeleteTimeInterval);
+                            */
+                            Thread.Sleep(DynamicConstants.waitReadyToBeDeleteTimeInterval);
+
                         }
                         //*/
 
