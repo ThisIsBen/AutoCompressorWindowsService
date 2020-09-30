@@ -169,13 +169,13 @@ namespace AutoCompressorWindowsService
 
                         //Every time after AutoCompressorWindowsService finishes all its work,
                         //back up the content of the Dictionary that records 
-                        //which folder has been compressed                
+                        //which folder has been compressed to 圧縮済みフォルダー記録.json              
                         backupDictToFile();
 
 
                         EventLogHandler.outputLog("今日の圧縮全部完成しました。\n");
 
-                        //sleep until 5 seconds before the compression of the next day
+                        //sleep until 20 seconds before the next compression time
                         Thread.Sleep(sleepUntilNextDayCompression());
 
                        
@@ -229,27 +229,32 @@ namespace AutoCompressorWindowsService
             return false;
         }
 
-
-       public TimeSpan sleepUntilNextDayCompression()
+        //sleep until 20 seconds before the next compression time
+        public TimeSpan sleepUntilNextDayCompression()
         {
 
             DateTime nextCompressionTime;
 
             TimeSpan timeSpanUntilNextCompression;
 
-           if (DateTime.Today+compressionTime >= DateTime.Now)
+            //if the compression took more a day to finish,
+            //and the next compression time is later than current time on the same day.
+            if (DateTime.Today+compressionTime >= DateTime.Now)
             {
                  nextCompressionTime = DateTime.Today + compressionTime;
                  
             }
 
+            //if the compression finished within a day,
+            //and current time is earlier than the next compression time on the next day.
             else
             {
                 nextCompressionTime = DateTime.Today.AddDays(1) + compressionTime;
 
             }
 
-            timeSpanUntilNextCompression = nextCompressionTime.AddSeconds(-5) - DateTime.Now;
+            //calculate the sleep duration to sleep until 20 seconds before the next compression time
+            timeSpanUntilNextCompression = nextCompressionTime.AddSeconds(-20) - DateTime.Now;
 
             return timeSpanUntilNextCompression;
 
@@ -310,7 +315,7 @@ namespace AutoCompressorWindowsService
 
 
         //Back up the content of the Dictionary that records 
-        //which folder has been compressed
+        //which folder has been compressed to 圧縮済みフォルダー記録.json
         public void backupDictToFile()
         {
             /*
