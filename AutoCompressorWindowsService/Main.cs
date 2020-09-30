@@ -103,6 +103,19 @@ namespace AutoCompressorWindowsService
         //Check the free disk space 
         private void AutoFolderCompressorTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            //stop the timer for compressing folders
+            //because when the user sets the 何日前のデータを圧縮して保存するか（単位：日）:
+            //in the 自動圧縮設定.txt　to be very big like compressing all the 
+            //folders created 1 day ago,
+            //it will take more than 1 day to finish all the compression process.
+
+            //If we do not stop the timer, the program will start again in the next day 
+            //before all the compression process ends. 
+            //Some task will be done again and maybe some error will occur.
+            timer.Stop();
+
+
+
             //Step 2 Activate the compression automatically 
             //according to the compression time set by the user
 
@@ -120,16 +133,7 @@ namespace AutoCompressorWindowsService
                     {
 
                        
-                        //stop the timer for compressing folders
-                        //because when the user sets the 何日前のデータを圧縮して保存するか（単位：日）:
-                        //in the 自動圧縮設定.txt　to be very big like compressing all the 
-                        //folders created 1 day ago,
-                        //it will take more than 1 day to finish all the compression process.
-
-                        //If we do not stop the timer, the program will start again in the next day 
-                        //before all the compression process ends. 
-                        //Some task will be done again and maybe some error will occur.
-                        timer.Stop();
+                       
 
 
 
@@ -174,8 +178,7 @@ namespace AutoCompressorWindowsService
                         //sleep until 5 seconds before the compression of the next day
                         Thread.Sleep(sleepUntilNextDayCompression());
 
-                        //start the timer again after all the compression process finishes
-                        timer.Start();
+                       
 
 
                     }
@@ -183,7 +186,10 @@ namespace AutoCompressorWindowsService
                 
 
             }
-            
+
+            //start the timer again after all the compression process finishes
+            timer.Start();
+
         }
 
         //Check whether the user wants to delete folders automatically after AutoCompressorWindowsService compresses the folders.
