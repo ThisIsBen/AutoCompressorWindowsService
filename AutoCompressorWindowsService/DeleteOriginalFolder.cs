@@ -13,9 +13,11 @@ namespace AutoCompressorWindowsService
 {
     class DeleteOriginalFolder
     {
-
+        /*
         //Record which folders can be deleted (The folder's status is "圧縮して保存しました。" will be deleted)
         public static List<string> deletionList = new List<string>();
+        */
+
 
         //Wait until the specified folder is not in use, and then
         //delete it.
@@ -293,6 +295,7 @@ namespace AutoCompressorWindowsService
             return false;
         }
 
+        /*
         //Clear the content of the deletionList
         public static void resetDeletionList()
         {
@@ -301,42 +304,24 @@ namespace AutoCompressorWindowsService
 
 
         }
+        */
 
-
-        //Delete A original folders after it finishes its compression process
-        public static void deleteAOriginalFolderAfterCompress(string targetFolder)
+        //Delete the original folder that has been compressed successfully
+        public static void DeleteAnOriginalFolderAfterCompression(string targetFolder,string deleteFolderName)
         {
-            
-           
-            //delete all the folders in the DeleteOriginalFolder.deletionList,
-            //The status of the folders in the DeleteOriginalFolder.deletionList are all "圧縮して保存しました。"
-            foreach (string delFolderName in DeleteOriginalFolder.deletionList) // Loop through List with foreach
-            {
+            //Wait for the compression to finish and delete the original folder
+            deleteAFolderIfNotInUse(targetFolder + "\\" + deleteFolderName);
 
 
-                //Wait for the compression to finish and delete the original folder
-                deleteAFolderIfNotInUse(targetFolder + "\\" + delFolderName);
-
-
-                //Write the delete event to log
-                //Add the status of the currently processed folder to the log message.
-                Main.folderStatusAfterCompressLog += delFolderName + ": " + "削除しました。\n";
-                
-
-
-
-
-            }
-
-            //Clear the content of the deletionList
-            DeleteOriginalFolder.resetDeletionList();
-
-            
-
-
+            //Write the delete event to log
+            //Add the status of the currently processed folder to the log message.
+            Main.folderStatusAfterCompressLog += deleteFolderName + ": " + "削除しました。\n";
 
         }
 
+
+
+        
 
 
         //Wait until the specified folder is not in use, and then
@@ -609,6 +594,7 @@ namespace AutoCompressorWindowsService
 
         }
 
+        /*
         //Delete ALL original folders after compression finishes
         private void deleteWholeOriginalFolderAfterCompress(string targetFolder)
         {
@@ -643,7 +629,7 @@ namespace AutoCompressorWindowsService
 
 
         }
-        
+        */
         
         
         /*

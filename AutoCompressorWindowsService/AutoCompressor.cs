@@ -30,7 +30,7 @@ namespace AutoCompressorWindowsService
 
             string storagePathWithZIPFilename=storageFolderName + "\\" + currentFolderName + ".zip";
             //if there is a zip file with the same name exists,
-            //do nothing to avoid overwrite old zip file
+            //do nothing to avoid compressing the folder again and overwriting the old zip file
             //else, compress and create zip file as usual
             if (File.Exists(storagePathWithZIPFilename) == false)
             {
@@ -57,14 +57,14 @@ namespace AutoCompressorWindowsService
                     //and the 圧縮ソフト_エラーメッセージ folder in NAS
                     ReportErrorMsg.displayPopUpErrMsg("フォルダー圧縮", errorMessage);
 
-                    //wait a while before starting next retry
-                    Thread.Sleep(DynamicConstants.retryTimeInterval);
-
-                    //output error message to a txt file in 圧縮ソフトエラーメッセージ folder in NAS
+                    
+                    //output error message to a txt file in 圧縮ソフトエラーメッセージ folder on NAS
                     ReportErrorMsg.outputErrorMessageTxt("フォルダー圧縮", errorMessage, DynamicConstants.errorMessageTxtFolderPath);
 
+                    //wait a while before for outputing the error message txt file on NAS
+                    Thread.Sleep(1000);
 
-                    //Stop the AutoCompressorWindowsService
+                    //Stop the 圧縮ソフト（AutoCompressorWindowsService）
                     Main.stopWindowsService("AutoCompressorWindowsService");
 
                 }
@@ -215,22 +215,27 @@ namespace AutoCompressorWindowsService
                     */
 
 
+                //If the compression is successful,the execution will reach here.
 
-                //record that the folder is compressed successfully in the "compressedFolderNameDict" dictionary
+                //Record that the folder is compressed successfully to the "compressedFolderNameDict" dictionary
                 compressedFolderNameDict[currentFolderName] = "圧縮して保存しました。";
 
-                //Add the status of the currently processed folder to the log message.
+                //Add the status of the currently compressed folder to the log message.
                 Main.folderStatusAfterCompressLog += currentFolderName + ": " + "圧縮して保存しました。\n";
 
+                /*
+                 * If you want to delete all the original folders at once instead of delete them one by one after its compression,
+                 * you can use the following code.
                 //Add the folder to the deletion list
                 //The folders in the deletion list will be deleted after all the compression process has done.
                 DeleteOriginalFolder.deletionList.Add(currentFolderName);
+                */
             }
 
 
             //If there is a zip file with the same name exists,
-            //1. Do nothing to avoid overwrite old zip file
-            //record the repeated folder in the "compressedFolderNameDict" dictionary
+            //1. Do nothing to avoid compressing the folder again and overwriting old zip file
+            //Record the repeated folder in the "compressedFolderNameDict" dictionary
 
             //2. The original file will not be deleted, even though the user set the 
             //圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください): to "Yes"
@@ -247,7 +252,10 @@ namespace AutoCompressorWindowsService
 
         }
 
-        //the task that compressAFolderThread will execute to compress a folder
+
+
+        /*
+        //The task that compressAFolderThread will execute to compress a folder
 
         //use a thread to compress the folderto a ZIP file
         //so that we can kill the thread and delete the incomplete ZIP file
@@ -279,7 +287,7 @@ namespace AutoCompressorWindowsService
 
 
         }
-
+        */
 
         //Get free space of the drive selected by the user.
         public double getDiskFreeSpace(string NASDriveName)
@@ -322,60 +330,62 @@ namespace AutoCompressorWindowsService
         public void compressFolder(string targetFolder, string ZIPStorageFolder,
             string folderOverNDays, string deleteAfterCompressOption)
         {
-            
 
-                //get the date from folderOverNDays
-                DateTime olderThanThisDate = DateTime.Now.AddDays(-1 * Int32.Parse(folderOverNDays));
+
+            //Get the date from folderOverNDays(何日前のデータを圧縮して保存するか)
+            DateTime olderThanThisDate = DateTime.Now.AddDays(-1 * Int32.Parse(folderOverNDays));
                 
-                //count the number of folder to be compressed in today's compression 
-                int countTodayCompressFolderNum = 1;
+            //count the number of folder to be compressed in today's compression 
+            int countTodayCompressFolderNum = 1;
 
 
 
             //Get creation time of each folder
             foreach (string currentFolderFullPath in Directory.GetDirectories(targetFolder))
-                {
+            {
                     //Get creation time of each folder
                     DateTime currentFolderCreationDate = Directory.GetLastWriteTime(currentFolderFullPath);
 
-                   
-
-
-                    //get folder name
+                    //Get folder name
                     string currentFolderName = currentFolderFullPath.Remove(0, targetFolder.Length + 1);
 
+                    //Get the folders created over XX days ago (何日前のデータを圧縮して保存するか)　
                     if (currentFolderCreationDate <= olderThanThisDate)
                     {
-                        //if the folder name does not exist in the dictionary, 
+                        //If the folder name does not exist in the dictionary, 
                         //add the folder name to a dictionary
                         if (!compressedFolderNameDict.ContainsKey(currentFolderName))
                         {
-                            //keep the number of folder to be compressed in today's compression 
+                            //Keep the number of folder to be compressed in today's compression 
                             //below the maximum setting
                             if (countTodayCompressFolderNum <= DynamicConstants.oneDayMaxCompressFolderNum)
                             {
 
 
-                                    //accumulate the number of folder to be compressed in today's compression
+                                    //Accumulate the number of folder to be compressed in today's compression
                                     countTodayCompressFolderNum = countTodayCompressFolderNum + 1;
 
-                            //compressedFolderNameDict.Add(currentFolderName, "");
+                                    //compressedFolderNameDict.Add(currentFolderName, "");
 
-                            /*
-                             //check compress order 
-                             EventLogHandler.outputLog("Start to compress "+currentFolderName );
-                            */
+                                    /*
+                                     //check compress order 
+                                     EventLogHandler.outputLog("Start to compress "+currentFolderName );
+                                    */
 
                                     //If the user specified the 毎日何時に圧縮一時停止するのか（24時間制） and 毎日何時に圧縮再開するのか（24時間制）
                                     if (ReadInUserSettings.IsPauseTimeSet())
                                     {
-                                        //圧縮一時停止する
+                                        //If the 一時停止 time has come,
+                                        //圧縮一時停止し、
                                         //圧縮再開する時間になったら、再開する
+
+                                　　　　//If the 一時停止 time hasn't come yet,
+                                        //keep on compressing the next folder.
                                         pauseTheCompressionProgram();
 
                                     }
 
-                                    //compress the folder
+                                    //Compress the folder
                                     createZIPFile(currentFolderFullPath, ZIPStorageFolder , currentFolderName);
 
                                     /*
@@ -384,13 +394,13 @@ namespace AutoCompressorWindowsService
                                     */
 
 
-                                    //If the user set圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
+                                    //After the compression, if the user set 圧縮して保存したら、自動でフォルダーを削除するか (Yes or No を入力してください):
                                     //to be "Yes" in the 自動圧縮設定.txt,
-                                    //we delete the original folder after compression
+                                    //we delete the original folder 
                                     if (deleteAfterCompressOption == "DeleteAfterCompress")
                                     {
-                                        // Delete A original folders after it finishes its compression process
-                                        DeleteOriginalFolder.deleteAOriginalFolderAfterCompress(targetFolder);
+                                        // Delete the original folder 
+                                        DeleteOriginalFolder.DeleteAnOriginalFolderAfterCompression(targetFolder, currentFolderName);
                                     }
 
                                 }
@@ -398,9 +408,9 @@ namespace AutoCompressorWindowsService
 
 
 
-                        //if the folder name has existed in the dictionary,
-                        //do nothing to avoid overwriting old zip file, and
-                        //record the repeated folder in the "compressedFolderNameDict" dictionary
+                        //If the folder name has existed in the dictionary,
+                        //do nothing to avoid compressing it again and overwriting the old zip file, and
+                        //Record the repeated folder in the "compressedFolderNameDict" dictionary
                         else
                         {
 
@@ -412,7 +422,7 @@ namespace AutoCompressorWindowsService
 
 
 
-                        //Output the log that records the status of all the folders that go through the compression process
+                        //Output the log that records the compression status of the current folder 
                         //to the イベントビューアー
                         if (Main.folderStatusAfterCompressLog != "")
                         {
@@ -430,12 +440,19 @@ namespace AutoCompressorWindowsService
                 }
 
 
-            
+
 
         }
 
-        //圧縮一時停止する
+
+
+
+        //If the 一時停止 time has come,
+        //圧縮一時停止し、
         //圧縮再開する時間になったら、再開する
+
+        //If the 一時停止 time hasn't come yet,
+        //keep on compressing the next folder.
         public void pauseTheCompressionProgram()
         {
             //if a day has passed since the program started running

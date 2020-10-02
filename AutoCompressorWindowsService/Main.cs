@@ -55,7 +55,7 @@ namespace AutoCompressorWindowsService
         protected override void OnStart(string[] args)
         {
             //set up AutoCompressor object
-            autoCompressorObj =new AutoCompressor();
+            autoCompressorObj = new AutoCompressor();
 
             //set up ReadInUserSettings object and 
             //read in the user's AutoCompressor settings from a txt file
@@ -175,7 +175,7 @@ namespace AutoCompressorWindowsService
 
                         EventLogHandler.outputLog("今日の圧縮全部完成しました。\n");
 
-                        //sleep until 20 seconds before the next compression time
+                        //sleep until 10 seconds before the next compression time
                         Thread.Sleep(sleepUntilNextDayCompression());
 
                        
@@ -229,7 +229,7 @@ namespace AutoCompressorWindowsService
             return false;
         }
 
-        //sleep until 20 seconds before the next compression time
+        //sleep until 10 seconds before the next compression time
         public TimeSpan sleepUntilNextDayCompression()
         {
 
@@ -253,8 +253,8 @@ namespace AutoCompressorWindowsService
 
             }
 
-            //calculate the sleep duration to sleep until 20 seconds before the next compression time
-            timeSpanUntilNextCompression = nextCompressionTime.AddSeconds(-20) - DateTime.Now;
+            //calculate the sleep duration to sleep until 10 seconds before the next compression time
+            timeSpanUntilNextCompression = nextCompressionTime.AddSeconds(-10) - DateTime.Now;
 
             return timeSpanUntilNextCompression;
 
@@ -291,24 +291,24 @@ namespace AutoCompressorWindowsService
 
         }
 
-       
-        
 
 
-       
 
-        //recover the content of the Dictionary that records 
+
+
+
+        //Recover the content of the Dictionary from 圧縮済みフォルダー記録.json that records 
         //which folder has been compressed
         public void recoverDictFromFile()
         {
 
-            
-           
+
+
             /*
             //recover 圧縮済みフォルダーの記録 to a dictionary from a xml file
             Backup_RecoverDict.recoverDictFromXMLFile(DynamicConstants.backupDictXMLFile, autoCompressorObj.compressedFolderNameDict);
             */
-            //recover 圧縮済みフォルダーの記録 to a dictionary from a json file
+            //recover 圧縮済みフォルダーの記録 to a dictionary from a json file(圧縮済みフォルダー記録.json)
             autoCompressorObj.compressedFolderNameDict=Backup_RecoverDict.recoverDictFromJSONFile(DynamicConstants.backupDictJSONFile);
 
         }
@@ -323,7 +323,7 @@ namespace AutoCompressorWindowsService
             Backup_RecoverDict.backupDictToXMLFile(DynamicConstants.backupDictXMLFile, autoCompressorObj.compressedFolderNameDict);
             */
 
-            //Save the content of the 圧縮済みフォルダーの記録dictionary to a json file
+            //Save the content of the 圧縮済みフォルダーの記録dictionary to a json file(圧縮済みフォルダー記録.json)
             Backup_RecoverDict.backupDictToJSONFile(DynamicConstants.backupDictJSONFile, autoCompressorObj.compressedFolderNameDict);
         }
 
@@ -336,15 +336,16 @@ namespace AutoCompressorWindowsService
         }
 
 
-       
 
 
-        //stop the specified service and it waits until the service is stopped or a timeout(60sec) occurs.
+        //Stop the 圧縮ソフト（AutoCompressorWindowsService）：
+        //Stop the Windows Service and it waits until the service is stopped or a timeout(60sec) occurs.
         public static void stopWindowsService(string serviceName)
         {
             EventLogHandler.outputLog("エラーが発生しましたので、AutoCompressorWindowsServiceは停止されました。");
 
-
+            //timeout for stopping the Windows Service
+            //Force shut down the Windows Service after this timeout.
             int timeoutMilliseconds = 60 *1000;
 
             ServiceController service = new ServiceController(serviceName);
@@ -362,7 +363,7 @@ namespace AutoCompressorWindowsService
 
         public static IntPtr WTS_CURRENT_SERVER_HANDLE = IntPtr.Zero;
         
-        //Display GUI message from Windows Service
+        //Display GUI message window 
         public static void showMsgBoxFromWS(string message, string title) { int resp = 0; WTSSendMessage(WTS_CURRENT_SERVER_HANDLE, WTSGetActiveConsoleSessionId(), title, title.Length, message, message.Length, 0, 0, out resp, false); }
         [DllImport("kernel32.dll", SetLastError = true)] public static extern int WTSGetActiveConsoleSessionId();[DllImport("wtsapi32.dll", SetLastError = true)] public static extern bool WTSSendMessage(IntPtr hServer, int SessionId, String pTitle, int TitleLength, String pMessage, int MessageLength, int Style, int Timeout, out int pResponse, bool bWait);
 

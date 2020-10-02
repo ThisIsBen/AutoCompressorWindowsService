@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace AutoCompressorWindowsService
 {
+    //Output log to イベントビューアー
     class EventLogHandler
     {
 
         static System.Diagnostics.EventLog eventLog;
 
-        // Create an EventLog for monitoring this app
+        // Create an EventLog in イベントビューアー for monitoring this app
         public static void createEventlog(string eventLogSource, string eventLogName)
         {
 
@@ -27,7 +28,7 @@ namespace AutoCompressorWindowsService
             eventLog.Source = eventLogSource;
         }
 
-
+        //Output log to the イベントビューアー
         public static void outputLog(string logContent)
         {
             eventLog.WriteEntry(logContent);

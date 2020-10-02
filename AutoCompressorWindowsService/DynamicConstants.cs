@@ -46,7 +46,7 @@ namespace AutoCompressorWindowsService
         //wait for files to be ready to be deleted
         //when deleting the files if the files are still in use,
         //wait for this time interval and try to delete it again.
-        public static int waitReadyToBeDeleteTimeInterval = 10 * 1000;//20 second
+        public static int waitReadyToBeDeleteTimeInterval = 10 * 1000;//10 second
 
 
         //毎日圧縮するフォルダ数の最大限
