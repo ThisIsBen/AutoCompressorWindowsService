@@ -14,6 +14,9 @@ namespace AutoCompressorWindowsService
     class DeleteOriginalFolder
     {
         /*
+         * If you want to delete all the original folders at once instead of delete them one by one after its compression,
+         * you can use this list to contain all the successfully compressed folder names.
+         * by calling "deletionList.Add(Compressed Folder Name);" in the createZIPFile function in the AutoCompressor.cs
         //Record which folders can be deleted (The folder's status is "圧縮して保存しました。" will be deleted)
         public static List<string> deletionList = new List<string>();
         */

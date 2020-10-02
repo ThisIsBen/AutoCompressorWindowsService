@@ -223,13 +223,7 @@ namespace AutoCompressorWindowsService
                 //Add the status of the currently compressed folder to the log message.
                 Main.folderStatusAfterCompressLog += currentFolderName + ": " + "圧縮して保存しました。\n";
 
-                /*
-                 * If you want to delete all the original folders at once instead of delete them one by one after its compression,
-                 * you can use the following code.
-                //Add the folder to the deletion list
-                //The folders in the deletion list will be deleted after all the compression process has done.
-                DeleteOriginalFolder.deletionList.Add(currentFolderName);
-                */
+                
             }
 
 
